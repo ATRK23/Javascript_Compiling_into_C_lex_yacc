@@ -1,4 +1,4 @@
-Vous vous trouvez sur la branche ``code_gen'' du projet de compilation.
+Vous vous trouvez sur la branche ``main'' du projet de compilation.
 ********************************************************************************
 
 ## Getting started
