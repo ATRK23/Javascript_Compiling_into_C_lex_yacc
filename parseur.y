@@ -8,7 +8,7 @@
 %start commande
 
 %left '+' '-'
-%left '*'
+%left '*' '/'
 %nonassoc UMOINS
 
 %%
@@ -18,6 +18,7 @@ expression:
     expression '+' expression
     | expression '-' expression
     | expression '*' expression
+    | expression '/' expression
     | '(' expression ')'
     | '-' expression %prec UMOINS
     | NUMBER
