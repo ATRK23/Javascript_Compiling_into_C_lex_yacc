@@ -5,13 +5,14 @@
 %}
 
 %token NUMBER
-%start expression
+%start commande
 
 %left '+' '-'
 %left '*'
 %nonassoc UMOINS
 
 %%
+commande : expression ';'
 
 expression:
     expression '+' expression
