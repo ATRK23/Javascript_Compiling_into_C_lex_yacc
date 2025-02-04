@@ -12,16 +12,23 @@
 %nonassoc UMOINS
 
 %%
-commande : expression ';'
-
+commande:
+    expression ';'
+                { printf("Resultat= %i\n", $1); }
 expression:
     expression '+' expression
+                { $$ = $1+$3; }
     | expression '-' expression
+                { $$ = $1-$3; }
     | expression '*' expression
+                { $$ = $1*$3; }
     | '(' expression ')'
+                { $$ = $2; }
     | '-' expression %prec UMOINS
+                { $$ = -$2; }
     | NUMBER
-    ;
+                { $$ = $1; } // default semantic value
+;
 
 %% // denotes the end of the grammar
     // everything after %% is copied at the end of the generated .c
