@@ -4,7 +4,7 @@
 %}
 
 %%
-0|[1-9][0-9]* { printf("lex: création token NUMBER %s\n",yytext);
+0|[1-9][0-9]*|([0-9]+.[0-9]*)|(.[0-9]+) { printf("lex: création token NUMBER %s\n",yytext);
     return NUMBER; }
 [ \t\r] { ; } // separator
 \n { printf("lex: fin de lecture");
