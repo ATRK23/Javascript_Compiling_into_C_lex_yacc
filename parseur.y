@@ -4,17 +4,19 @@
     int yyerror(const char*); // on generated functions
 %}
 
-%token NUMBER
+%union { double number } ;
+%token <number> NUMBER
+%type <number> expression
 %start commande
 
 %left '+' '-'
-%left '*'
+%left '*' '/'
 %nonassoc UMOINS
 
 %%
 commande:
     expression ';'
-                { printf("Resultat= %i\n", $1); }
+                { printf("Resultat= %f\n", $1); }
 expression:
     expression '+' expression
                 { $$ = $1+$3; }
@@ -22,6 +24,7 @@ expression:
                 { $$ = $1-$3; }
     | expression '*' expression
                 { $$ = $1*$3; }
+    | expression '/' expression
     | '(' expression ')'
                 { $$ = $2; }
     | '-' expression %prec UMOINS
