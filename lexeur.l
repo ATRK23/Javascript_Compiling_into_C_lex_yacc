@@ -4,7 +4,7 @@
 %}
 
 %%
-0|[1-9][0-9]* { printf("lex::NUMBER %s\n", yytext); yylval.number=atoi(yytext); return NUMBER; }
+0|[1-9][0-9]*|([0-9]+.[0-9]*)|(.[0-9]+) { printf("lex::NUMBER %s\n", yytext); yylval.number=atoi(yytext); return NUMBER; }
 [ \t\r] { ; } // separator
 \n { printf("lex: fin de lecture");
     return 0; }

@@ -17,7 +17,7 @@
 %parse-param {AST_comm *rez}
 
 %left '+' '-'
-%left '*'
+%left '*' '/'
 %nonassoc UMOINS
 
 %%
