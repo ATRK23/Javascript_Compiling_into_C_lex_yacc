@@ -4,7 +4,7 @@
     int yyerror(void*, const char*); // on generated functions
 %}
 
-%union { double number } ;
+%union { double number; } ;
 %parse-param {double *rez} ;
 %token <number> NUMBER
 %type <number> expression
