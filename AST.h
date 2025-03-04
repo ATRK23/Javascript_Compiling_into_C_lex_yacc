@@ -1,4 +1,5 @@
-
+#ifndef _AST
+#define _AST
 /* unary-and-binary tree structure */
 struct _expr_tree {
   char rule;                    /* "name" of the rule/operation operation */
@@ -35,3 +36,4 @@ void free_comm(AST_comm t);
 /* print an AST*/
 void print_expr(AST_expr t);
 void print_comm(AST_comm t);
+#endif
