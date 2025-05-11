@@ -4,7 +4,7 @@
 struct _expr_tree {
   char rule;                    /* "name" of the rule/operation operation */
   int number;                   /* int  for value */
-  struct _expr_tree* left;           /* NULL if unary node or leaf*/
+  struct _expr_tree* left;           /* NULL   if unary node or leaf*/
   struct _expr_tree* right;          /* used for unary node but NULL if leaf */
 };
 
@@ -36,4 +36,6 @@ void free_comm(AST_comm t);
 /* print an AST*/
 void print_expr(AST_expr t);
 void print_comm(AST_comm t);
+void print_code_expr(AST_expr t);
+void print_code(AST_comm t);
 #endif

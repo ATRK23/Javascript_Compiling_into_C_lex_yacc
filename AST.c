@@ -76,5 +76,22 @@ void print_comm(AST_comm t){
     print_expr(t->expr1);
     printf("] ");
   }
+}
+void print_code_expr(AST_expr ex){
+  if(ex == NULL) {
+    return;
+  }
+  print_code_expr(ex->left);
+  print_code_expr(ex->right);
+  switch (ex->rule){
+    case 'N' : printf("CsteNb %d\n", ex->number);break;
+    case '+' : printf("AddiNb\n");break;
+    case '*' : printf("MultNb\n");break;
+    case '-' : printf("SubiNb\n");break;
+    case 'M' : printf("NegaNb\n");break;
+  }
+}
 
+void print_code(AST_comm t){
+  print_code_expr(t->expr1);
 }
