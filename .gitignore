@@ -1,0 +1,6 @@
+lex.yy.c
+parseur.tab.*
+main
+*.o
+compilateur
+.vscode
