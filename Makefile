@@ -18,4 +18,4 @@ lex.yy.c: lexeur.l
 	flex lexeur.l
 
 clean:
-	rm -rf parseur.tab.* lex.yy.c main
+	rm -rf parseur.tab.* lex.yy.c main.o lex.yy.o AST.o compilateur
