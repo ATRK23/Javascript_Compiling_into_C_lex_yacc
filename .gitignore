@@ -3,3 +3,4 @@ parseur.tab.*
 main
 *.o
 compilateur
+.vscode
