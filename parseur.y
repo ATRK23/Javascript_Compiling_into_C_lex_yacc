@@ -5,6 +5,8 @@
 %}
 
 %token NUMBER
+%token BOOLEAN
+%token EQ LEQ
 %start commande
 
 %left '+' '-'

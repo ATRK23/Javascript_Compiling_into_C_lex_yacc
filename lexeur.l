@@ -6,6 +6,10 @@
 %%
 0|[1-9][0-9]* { printf("lex: création token NUMBER %s\n",yytext);
     return NUMBER; }
+True    {return BOOLEAN; }
+False   {return BOOLEAN; }
+"=="   { return EQ; }
+"<="   { return LEQ; }
 [ \t\r] { ; } // separator
 \n { printf("lex: fin de lecture");
     return 0; }
