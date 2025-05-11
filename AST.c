@@ -88,6 +88,7 @@ void print_code_expr(AST_expr ex){
     case '+' : printf("AddiNb\n");break;
     case '*' : printf("MultNb\n");break;
     case '-' : printf("SubiNb\n");break;
+    case '/' : printf("DiviNb\n");break;
     case 'M' : printf("NegaNb\n");break;
   }
 }

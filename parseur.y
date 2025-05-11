@@ -32,6 +32,8 @@ expression:
         { $$ = new_binary_expr('-',$1,$3);}
     | expression '*' expression
         { $$ = new_binary_expr('*',$1,$3);}
+    | expression '/' expression
+        { $$ = new_binary_expr('/', $1, $3);}
     | '(' expression ')'
         { $$ = $2;}
     | '-' expression %prec UMOINS
