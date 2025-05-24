@@ -4,7 +4,8 @@
 %}
 
 %%
-0|[1-9][0-9]* { printf("lex: création token NUMBER %s\n",yytext);
+0|[1-9][0-9]* { printf("lex: création token NUMBER %s\n", yytext);
+    yylval.number = atoi(yytext);
     return NUMBER; }
 "true"      { printf("lex: TRUE\n"); return TRUE; }
 "false"     { printf("lex: FALSE\n"); return FALSE; }

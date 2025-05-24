@@ -90,9 +90,32 @@ void print_code_expr(AST_expr ex){
     case '-' : printf("SubiNb\n");break;
     case '/' : printf("DiviNb\n");break;
     case 'M' : printf("NegaNb\n");break;
+    case 'T' : printf("CsteBool true\n"); break;
+    case 'F' : printf("CsteBool false\n"); break;
+    case '&' : printf("AndBool\n"); break;
+    case '|' : printf("OrBool\n"); break;
+    case '!' : printf("NotBool\n"); break;
+    case 'E' : printf("EqBool\n"); break;
+    case 'D' : printf("NeqBool\n"); break;
+    case '<' : printf("LtBool\n"); break;
+    case 'l' : printf("LeBool\n"); break;
+    case '>' : printf("GtBool\n"); break;
+    case 'g' : printf("GeBool\n"); break;
   }
 }
 
 void print_code(AST_comm t){
   print_code_expr(t->expr1);
 }
+
+AST_expr new_boolean_expr(int value)
+{
+  AST_expr t=(struct _expr_tree*) malloc(sizeof(struct _expr_tree));
+  if (t!=NULL){
+    t->rule = (value ? 'T' : 'F');
+    t->left = NULL;
+    t->right = NULL;
+  } else printf("ERR : MALLOC ");
+  return t;
+}
+
