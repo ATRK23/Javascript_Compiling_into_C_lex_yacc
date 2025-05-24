@@ -6,6 +6,8 @@
 %%
 0|[1-9][0-9]* { printf("lex: création token NUMBER %s\n",yytext);
     return NUMBER; }
+[0-9]+\.[0-9]*[eE][-+]?[0-9]+ { yylval.number = atof(yytext); return NUMBER; }
+NaN|nan { yylval.number = 0.0/0.0; return NUMBER; }
 "true"      { printf("lex: TRUE\n"); return TRUE; }
 "false"     { printf("lex: FALSE\n"); return FALSE; }
 "&&"        { printf("lex: AND\n"); return AND; }
