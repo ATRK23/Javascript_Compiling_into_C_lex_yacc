@@ -13,6 +13,7 @@
 %token BOOLEAN
 %token TRUE FALSE AND OR NOT EQ NEQ LE GE LT GT
 %token ASSIGN
+%token IMPORT
 %token <string> IDENT
 %start commande
 
@@ -28,6 +29,7 @@
 
 %%
 commande : expression ';'
+        | IMPORT IDENT ';' {printf("parse import ident: %s", $2);}
          ;
 
 expression:
