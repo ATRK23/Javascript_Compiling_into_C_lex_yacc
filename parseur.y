@@ -34,14 +34,10 @@ commande :
         { *rez = new_command($1);}
 
 expression:
-    expression: expression '+' expression {printf("parse: ADD\n");
-    $$ = new_binary_expr('+',$1,$3);}
-    | expression '-' expression {printf("parse: SUB\n");
-    $$ = new_binary_expr('-',$1,$3);}
-    | expression '*' expression {printf("parse: MUL\n");
-    $$ = new_binary_expr('*',$1,$3);}
-    | expression '/' expression {printf("parse: DIV\n");
-    $$ = new_binary_expr('/', $1, $3);}
+    expression: expression '+' expression {$$ = new_binary_expr('+',$1,$3);}
+    | expression '-' expression {$$ = new_binary_expr('-',$1,$3);}
+    | expression '*' expression {$$ = new_binary_expr('*',$1,$3);}
+    | expression '/' expression {$$ = new_binary_expr('/', $1, $3);}
     | expression AND expression {$$ = new_binary_expr('&', $1, $3);}
     | expression OR expression {$$ = new_binary_expr('|', $1, $3);}
     | expression EQ expression {$$ = new_binary_expr('E', $1, $3);}
