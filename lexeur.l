@@ -20,9 +20,11 @@ NaN|nan { yylval.number = 0.0/0.0; return NUMBER; }
 ">="        { printf("lex: GE\n"); return GE; }
 "<"         { printf("lex: LT\n"); return LT; }
 ">"         { printf("lex: GT\n"); return GT; }
-[ \t\r] { ; } 
+[ \t\r] { ; }
 \n { printf("lex: fin de lecture");
     return 0; }
+"//".*                          { /* commentaire monoligne : ignoré */ }
+"/*"([^*]*|\*+[^*/])*"*"+"/"    { /* commentaire multiligne : ignoré */ }
 . { printf("lex: création token %s\n",yytext);
     return yytext[0]; }
 %%
