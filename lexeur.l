@@ -1,12 +1,27 @@
 %{
-    #include <stdio.h> // printf
-    #include "parseur.tab.h" // token constants defined in parseur.y via #define
+    #include <stdio.h> 
+    #include "parseur.tab.h" 
 %}
 
 %%
-0|[1-9][0-9]*|([0-9]+.[0-9]*)|(.[0-9]+) { printf("lex::NUMBER %s\n", yytext); yylval.number=atof(yytext); return NUMBER; }
-[ \t\r\n] { ; } // separator
+0|[1-9][0-9]* { printf("lex: création token NUMBER %s\n", yytext);
+    yylval.number = atoi(yytext);
+    return NUMBER; }
+"true"      { printf("lex: TRUE\n"); return TRUE; }
+"false"     { printf("lex: FALSE\n"); return FALSE; }
+"&&"        { printf("lex: AND\n"); return AND; }
+"||"        { printf("lex: OR\n"); return OR; }
+"!"         { printf("lex: NOT\n"); return NOT; }
+"=="        { printf("lex: EQ\n"); return EQ; }
+"!="        { printf("lex: NEQ\n"); return NEQ; }
+"<="        { printf("lex: LE\n"); return LE; }
+">="        { printf("lex: GE\n"); return GE; }
+"<"         { printf("lex: LT\n"); return LT; }
+">"         { printf("lex: GT\n"); return GT; }
+[ \t\r] { ; } 
+\n { printf("lex: fin de lecture");
+    return 0; }
 . { printf("lex: création token %s\n",yytext);
     return yytext[0]; }
 %%
-int yywrap(void){ return 1; } // function called at the end of the file
+int yywrap(void){ return 1; } 

@@ -8,17 +8,25 @@
 %}
 
 %token NUMBER
+%token BOOLEAN
+%token TRUE FALSE AND OR NOT EQ NEQ LE GE LT GT
 %start commande
 
 %union { int number; AST_expr ast; };
-%type <number> NUMBER
+%token <number> NUMBER
 %type <ast> expression
 
 %parse-param {AST_comm *rez}
 
+%left OR
+%left AND
+%left EQ NEQ
+%left LT LE GT GE
 %left '+' '-'
 %left '*' '/'
-%nonassoc UMOINS
+%right NOT
+%right UMOINS
+
 
 %%
 commande : 
@@ -26,25 +34,28 @@ commande :
         { *rez = new_command($1);}
 
 expression:
-    expression '+' expression
-        { $$ = new_binary_expr('+',$1,$3);}
-    | expression '-' expression
-        { $$ = new_binary_expr('-',$1,$3);}
-    | expression '*' expression
-        { $$ = new_binary_expr('*',$1,$3);}
-    | expression '/' expression
-        { $$ = new_binary_expr('/', $1, $3);}
-    | '(' expression ')'
-        { $$ = $2;}
-    | '-' expression %prec UMOINS
-        { $$ = new_unary_expr('M', $2);}
-    | NUMBER
-        { $$ = new_number_expr($1);}
+    expression: expression '+' expression {$$ = new_binary_expr('+',$1,$3);}
+    | expression '-' expression {$$ = new_binary_expr('-',$1,$3);}
+    | expression '*' expression {$$ = new_binary_expr('*',$1,$3);}
+    | expression '/' expression {$$ = new_binary_expr('/', $1, $3);}
+    | expression AND expression {$$ = new_binary_expr('&', $1, $3);}
+    | expression OR expression {$$ = new_binary_expr('|', $1, $3);}
+    | expression EQ expression {$$ = new_binary_expr('E', $1, $3);}
+    | expression NEQ expression {$$ = new_binary_expr('D', $1, $3);}
+    | expression LT expression {$$ = new_binary_expr('<', $1, $3);}
+    | expression LE expression {$$ = new_binary_expr('l', $1, $3);}
+    | expression GT expression {$$ = new_binary_expr('>', $1, $3);}
+    | expression GE expression {$$ = new_binary_expr('g', $1, $3);}
+    | NOT expression {$$ = new_unary_expr('!', $2);}
+    | '-' expression %prec UMOINS {$$ = new_unary_expr('M', $2);}
+    | '(' expression ')'{$$ = $2;}
+    | TRUE {$$ = new_boolean_expr(1);}
+    | FALSE {$$ = new_boolean_expr(0);}
+    | NUMBER {$$ = new_number_expr($1);}
     ;
-
-%% // denotes the end of the grammar
-    // everything after %% is copied at the end of the generated .c
-int yyerror(AST_comm *rez, const char *msg){ // called by the parser if the parsing fails
+%%
+    
+int yyerror(AST_comm *rez, const char *msg){
     printf("Parsing:: syntax error\n");
-    return 1; // to distinguish with the 0 retured by the success
+    return 1;
 }

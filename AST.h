@@ -29,6 +29,10 @@ AST_expr new_number_expr(int number);
 /* create an AST leaf from a value */
 AST_comm new_command(AST_expr expression);
 
+/* function for boolean expression */
+AST_expr new_boolean_expr(int value);
+
+
 /* delete an AST */
 void free_expr(AST_expr t);
 void free_comm(AST_comm t);
