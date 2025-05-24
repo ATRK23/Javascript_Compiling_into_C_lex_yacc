@@ -1,19 +1,26 @@
 %{
-    #include <stdio.h> // printf
-    #include "parseur.tab.h" // token constants defined in parseur.y via #define
+    #include <stdio.h> 
+    #include "parseur.tab.h" 
 %}
 
 %%
 0|[1-9][0-9]* { printf("lex: création token NUMBER %s\n",yytext);
     return NUMBER; }
-True    {return BOOLEAN; }
-False   {return BOOLEAN; }
-"=="   { return EQ; }
-"<="   { return LEQ; }
-[ \t\r] { ; } // separator
+"true"      { return TRUE; }
+"false"     { return FALSE; }
+"&&"        { return AND; }
+"||"        { return OR; }
+"!"         { return NOT; }
+"=="        { return EQ; }
+"!="        { return NEQ; }
+"<="        { return LE; }
+">="        { return GE; }
+"<"         { return LT; }
+">"         { return GT; }
+[ \t\r] { ; } 
 \n { printf("lex: fin de lecture");
     return 0; }
 . { printf("lex: création token %s\n",yytext);
     return yytext[0]; }
 %%
-int yywrap(void){ return 1; } // function called at the end of the file
+int yywrap(void){ return 1; } 

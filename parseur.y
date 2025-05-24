@@ -1,33 +1,51 @@
-%{ // the code between %{ and %} is copied at the start of the generated .c
+%{
     #include <stdio.h>
-    int yylex(void); // declared to avoid implicit call
-    int yyerror(const char*); // on generated functions
+    int yylex(void); 
+    int yyerror(const char*); 
 %}
 
 %token NUMBER
 %token BOOLEAN
-%token EQ LEQ
+%token TRUE FALSE AND OR NOT EQ NEQ LE GE LT GT
 %start commande
 
+%right NOT
+%left '*' '/'
 %left '+' '-'
-%left '*'
-%nonassoc UMOINS
+%left LT LE GT GE
+%left EQ NEQ
+%left AND
+%left OR
+%right UMOINS
+
 
 %%
 commande : expression ';'
+         ;
 
 expression:
     expression '+' expression
     | expression '-' expression
     | expression '*' expression
-    | '(' expression ')'
+    | expression '/' expression
+    | expression LT expression
+    | expression LE expression
+    | expression GT expression
+    | expression GE expression
+    | expression EQ expression
+    | expression NEQ expression
+    | expression AND expression
+    | expression OR expression
+    | NOT expression
     | '-' expression %prec UMOINS
+    | '(' expression ')'
+    | TRUE
+    | FALSE
     | NUMBER
     ;
-
-%% // denotes the end of the grammar
-    // everything after %% is copied at the end of the generated .c
-int yyerror(const char *msg){ // called by the parser if the parsing fails
+%%
+    
+int yyerror(const char *msg){
     printf("Parsing:: syntax error\n");
-    return 1; // to distinguish with the 0 retured by the success
+    return 1;
 }
