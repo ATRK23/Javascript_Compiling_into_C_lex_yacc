@@ -9,13 +9,13 @@
 %token TRUE FALSE AND OR NOT EQ NEQ LE GE LT GT
 %start commande
 
-%right NOT
-%left '*' '/'
-%left '+' '-'
-%left LT LE GT GE
-%left EQ NEQ
-%left AND
 %left OR
+%left AND
+%left EQ NEQ
+%left LT LE GT GE
+%left '+' '-'
+%left '*' '/'
+%right NOT
 %right UMOINS
 
 
@@ -24,24 +24,24 @@ commande : expression ';'
          ;
 
 expression:
-    expression '+' expression
-    | expression '-' expression
-    | expression '*' expression
-    | expression '/' expression
-    | expression LT expression
-    | expression LE expression
-    | expression GT expression
-    | expression GE expression
-    | expression EQ expression
-    | expression NEQ expression
-    | expression AND expression
-    | expression OR expression
-    | NOT expression
-    | '-' expression %prec UMOINS
-    | '(' expression ')'
-    | TRUE
-    | FALSE
-    | NUMBER
+    expression: expression '+' expression {printf("parse: ADD\n");}
+    | expression '-' expression {printf("parse: SUB\n");}
+    | expression '*' expression {printf("parse: MUL\n");}
+    | expression '/' expression {printf("parse: DIV\n");}
+    | expression AND expression {printf("parse: AND\n");}
+    | expression OR expression {printf("parse: OR\n");}
+    | expression EQ expression {printf("parse: EQ\n");}
+    | expression NEQ expression {printf("parse: NEQ\n");}
+    | expression LT expression {printf("parse: LT\n");}
+    | expression LE expression {printf("parse: LE\n");}
+    | expression GT expression {printf("parse: GT\n");}
+    | expression GE expression {printf("parse: GE\n");}
+    | NOT expression {printf("parse: NOT\n");}
+    | '-' expression %prec UMOINS {printf("parse: UMOINS\n");}
+    | '(' expression ')' {printf("parse: PAR\n");}
+    | TRUE {printf("parse: TRUE\n");}
+    | FALSE {printf("parse: FALSE\n");}
+    | NUMBER {printf("parse: NUMBER\n");}
     ;
 %%
     
