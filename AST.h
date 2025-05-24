@@ -3,7 +3,7 @@
 /* unary-and-binary tree structure */
 struct _expr_tree {
   char rule;                    /* "name" of the rule/operation operation */
-  int number;                   /* int  for value */
+  double number;                   /* int  for value */
   struct _expr_tree* left;           /* NULL   if unary node or leaf*/
   struct _expr_tree* right;          /* used for unary node but NULL if leaf */
 };
@@ -24,7 +24,7 @@ AST_expr new_binary_expr(char rule, AST_expr left, AST_expr right);
 AST_expr new_unary_expr(char rule, AST_expr son);
 
 /* create an AST leaf from a value */
-AST_expr new_number_expr(int number);
+AST_expr new_number_expr(double number);
 
 /* create an AST leaf from a value */
 AST_comm new_command(AST_expr expression);

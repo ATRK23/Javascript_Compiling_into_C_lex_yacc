@@ -5,3 +5,5 @@ main
 compilateur
 .vscode
 test.txt
+.vscode
+*.o

@@ -12,7 +12,7 @@
 %token TRUE FALSE AND OR NOT EQ NEQ LE GE LT GT
 %start commande
 
-%union { int number; AST_expr ast; };
+%union { double number; AST_expr ast; };
 %token <number> NUMBER
 %type <ast> expression
 
