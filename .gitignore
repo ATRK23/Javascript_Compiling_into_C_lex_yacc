@@ -4,3 +4,4 @@ main
 *.o
 compilateur
 .vscode
+test.txt
