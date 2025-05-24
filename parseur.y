@@ -7,9 +7,17 @@
     int yyerror(AST_comm *rez, const char*); // on generated functions
 %}
 
+%union {
+    double num;
+    char* string;
+}
+
 %token NUMBER
 %token BOOLEAN
 %token TRUE FALSE AND OR NOT EQ NEQ LE GE LT GT
+%token ASSIGN
+%token IMPORT
+%token <string> IDENT
 %start commande
 
 %union { double number; AST_expr ast; };
@@ -31,6 +39,7 @@
 %%
 commande : 
     expression ';'
+        | IMPORT IDENT ';' {printf("parse import ident: %s", $2);}
         { *rez = new_command($1);}
 
 expression:
@@ -52,6 +61,7 @@ expression:
     | TRUE {$$ = new_boolean_expr(1);}
     | FALSE {$$ = new_boolean_expr(0);}
     | NUMBER {$$ = new_number_expr($1);}
+    | IDENT ASSIGN expression {printf("parse assignation: %s", $1);}
     ;
 %%
     

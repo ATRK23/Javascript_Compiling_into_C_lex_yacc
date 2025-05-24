@@ -20,12 +20,20 @@ NaN|nan { yylval.number = 0.0/0.0; return NUMBER; }
 ">="        { printf("lex: GE\n"); return GE; }
 "<"         { printf("lex: LT\n"); return LT; }
 ">"         { printf("lex: GT\n"); return GT; }
+
 [ \t\r] { ; }
 \n { printf("lex: fin de lecture");
     return 0; }
+
 "//".*                          { /* commentaire monoligne : ignoré */ }
 "/*"([^*]*|\*+[^*/])*"*"+"/"    { /* commentaire multiligne : ignoré */ }
-. { printf("lex: création token %s\n",yytext);
+
+"=" {return ASSIGN;}
+"import" {return IMPORT; }
+[a-zA-Z_][a-zA-Z0-9_]*   { yylval.string = strdup(yytext); return IDENT; }
+
+
+. { printf(" lex: création token %s\n",yytext);
     return yytext[0]; }
 %%
 int yywrap(void){ return 1; } 
