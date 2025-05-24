@@ -77,6 +77,7 @@ void print_comm(AST_comm t){
     printf("] ");
   }
 }
+
 void print_code_expr(AST_expr ex){
   if(ex == NULL) {
     return;
@@ -84,23 +85,23 @@ void print_code_expr(AST_expr ex){
   print_code_expr(ex->left);
   print_code_expr(ex->right);
   switch (ex->rule){
-    case 'N' : printf("CsteNb %d\n", ex->number);break;
-    case '+' : printf("AddiNb\n");break;
-    case '*' : printf("MultNb\n");break;
-    case '-' : printf("SubiNb\n");break;
-    case '/' : printf("DiviNb\n");break;
-    case 'M' : printf("NegaNb\n");break;
-    case 'T' : printf("CsteBool true\n"); break;
-    case 'F' : printf("CsteBool false\n"); break;
+    case 'N' : printf("CsteNb %d\n", ex->number); break;
+    case '+' : printf("AddiNb\n"); break;
+    case '*' : printf("MultNb\n"); break;
+    case '-' : printf("SubsNb\n"); break;
+    case '/' : printf("DiviNb\n"); break;
+    case 'M' : printf("NegaNb\n"); break;
+    case 'T' : printf("CsteBo true\n"); break;
+    case 'F' : printf("CsteBo false\n"); break;
     case '&' : printf("AndBool\n"); break;
     case '|' : printf("OrBool\n"); break;
-    case '!' : printf("NotBool\n"); break;
-    case 'E' : printf("EqBool\n"); break;
-    case 'D' : printf("NeqBool\n"); break;
-    case '<' : printf("LtBool\n"); break;
-    case 'l' : printf("LeBool\n"); break;
-    case '>' : printf("GtBool\n"); break;
-    case 'g' : printf("GeBool\n"); break;
+    case '!' : printf("Not\n"); break;
+    case 'E' : printf("Equals\n"); break;
+    case 'D' : printf("NotEql\n"); break;
+    case '<' : printf("LoStNb\n"); break;
+    case 'l' : printf("LoEqNb\n"); break;
+    case '>' : printf("GrStNb\n"); break;
+    case 'g' : printf("GrEqNb\n"); break;
   }
 }
 
