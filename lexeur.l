@@ -22,7 +22,7 @@ NaN|nan { yylval.number = 0.0/0.0; return NUMBER; }
 ">"         { printf("lex: GT\n"); return GT; }
 
 [ \t\r] { ; }
-\n { printf("lex: fin de lecture");
+\n { printf("lex: fin de lecture\n");
     return 0; }
 
 "//".*                          { /* commentaire monoligne : ignoré */ }

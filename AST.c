@@ -54,6 +54,7 @@ void free_expr(AST_expr t)
     free(t);
   }
 }
+
 void free_comm(AST_comm t)
 {
   if (t!=NULL) {
@@ -72,6 +73,7 @@ void print_expr(AST_expr t){
     printf("] ");
   }
 }
+
 void print_comm(AST_comm t){
   if (t!=NULL) {
     printf("[ ");
@@ -80,12 +82,24 @@ void print_comm(AST_comm t){
     printf("] ");
   }
 }
+
 void print_code_expr(AST_expr ex){
   if(ex == NULL) {
     return;
   }
+
+  if(ex->rule == '&'){
+    print_code_expr(ex->left); 
+    printf("ConJmp %d\n", ex->right->taille + 1);
+    print_code_expr(ex->right);
+    printf("Jump 1\n");
+    printf("CsteBool false\n");
+    return;
+  }
+
   print_code_expr(ex->left);
   print_code_expr(ex->right);
+
   switch (ex->rule){
     case 'N' : printf("CsteNb %f\n", ex->number);break;
     case '+' : printf("AddiNb\n");break;
@@ -95,7 +109,6 @@ void print_code_expr(AST_expr ex){
     case 'M' : printf("NegaNb\n");break;
     case 'T' : printf("CsteBool true\n"); break;
     case 'F' : printf("CsteBool false\n"); break;
-    case '&' : printf("AndBool\n"); break;
     case '|' : printf("OrBool\n"); break;
     case '!' : printf("NotBool\n"); break;
     case 'E' : printf("EqBool\n"); break;
