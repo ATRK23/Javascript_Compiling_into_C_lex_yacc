@@ -4,6 +4,7 @@
 struct _expr_tree {
   char rule;                    /* "name" of the rule/operation operation */
   double number;                   /* int  for value */
+  int taille;
   struct _expr_tree* left;           /* NULL   if unary node or leaf*/
   struct _expr_tree* right;          /* used for unary node but NULL if leaf */
 };

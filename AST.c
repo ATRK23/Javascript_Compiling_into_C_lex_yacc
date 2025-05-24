@@ -10,6 +10,7 @@ AST_expr new_binary_expr(char rule, AST_expr left, AST_expr right) {
     t->rule=rule;
     t->left=left;
     t->right=right;
+    t->taille = 1 + (left ? left->taille : 0) + (right ? right->taille : 0);
   } else printf("ERR : MALLOC ");
   return t;
 }
@@ -29,6 +30,7 @@ AST_expr new_number_expr(double number)
     t->number=number;
     t->left=NULL;
     t->right=NULL;
+    t->taille = 1;
   } else printf("ERR : MALLOC ");
   return t;
 }
@@ -133,6 +135,7 @@ AST_expr new_boolean_expr(int value)
     t->rule = (value ? 'T' : 'F');
     t->left = NULL;
     t->right = NULL;
+    t->taille = 1;
   } else printf("ERR : MALLOC ");
   return t;
 }
