@@ -4,9 +4,16 @@
     int yyerror(const char*); 
 %}
 
-%token NUMBER
+%union {
+    double num;
+    char* string;
+}
+
+%token <num> NUMBER
 %token BOOLEAN
 %token TRUE FALSE AND OR NOT EQ NEQ LE GE LT GT
+%token ASSIGN
+%token <string> IDENT
 %start commande
 
 %left OR
@@ -42,6 +49,7 @@ expression:
     | TRUE {printf("parse: TRUE\n");}
     | FALSE {printf("parse: FALSE\n");}
     | NUMBER {printf("parse: NUMBER\n");}
+    | IDENT ASSIGN expression {printf("parse assignation: %s", $1);}
     ;
 %%
     
