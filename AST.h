@@ -12,7 +12,8 @@ typedef struct _expr_tree* AST_expr;
 
 struct _command_tree {
   char rule;                    /* "name" of the rule/operation operation */
-  AST_expr expr1;     	        /* used for command with at least one sub-expression */
+  AST_expr expr1;
+  char* import_name;     	        /* used for command with at least one sub-expression */
 };
 
 typedef struct _command_tree* AST_comm;
@@ -28,6 +29,8 @@ AST_expr new_number_expr(double number);
 
 /* create an AST leaf from a value */
 AST_comm new_command(AST_expr expression);
+
+AST_comm make_import_command(char* name);
 
 /* function for boolean expression */
 AST_expr new_boolean_expr(int value);

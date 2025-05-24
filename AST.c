@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "AST.h"
 
 /* create an AST from a root value and two AST sons */
@@ -104,8 +105,25 @@ void print_code_expr(AST_expr ex){
   }
 }
 
-void print_code(AST_comm t){
-  print_code_expr(t->expr1);
+void print_code(AST_comm t) {
+  if (t->rule == 'I') {
+    char path[256];
+    snprintf(path, sizeof(path), "%s.jsm", t->import_name);
+    FILE* f = fopen(path, "r");
+    if (!f) {
+      fprintf(stderr, "Erreur : fichier d'import introuvable : %s\n", path);
+      exit(1);
+    }
+    char buffer[512];
+    while (fgets(buffer, sizeof(buffer), f)) {
+      if (strncmp(buffer, "Halt", 4) != 0) {  // Optionnel : ignorer Halt
+        printf("%s", buffer);
+      }
+    }
+    fclose(f);
+  } else {
+    print_code_expr(t->expr1);
+  }
 }
 
 AST_expr new_boolean_expr(int value)
@@ -116,6 +134,19 @@ AST_expr new_boolean_expr(int value)
     t->left = NULL;
     t->right = NULL;
   } else printf("ERR : MALLOC ");
+  return t;
+}
+
+AST_comm make_import_command(char* name) {
+  printf("Import command for: %s\n", name);
+  AST_comm t = malloc(sizeof(struct _command_tree));
+  if (t != NULL) {
+    t->rule = 'I'; // I pour Import
+    t->import_name = name;
+    t->expr1 = NULL;
+  } else {
+    printf("ERR : MALLOC ");
+  }
   return t;
 }
 

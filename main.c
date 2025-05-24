@@ -2,12 +2,15 @@
 #include <stdio.h>
 #include "AST.h"
 extern int yyparse(void*);
+
 int main(void){
-    AST_expr temp;
-    AST_comm arbre = new_command(temp);
+    AST_comm arbre = NULL;
     if (!yyparse(&arbre)) {
-        printf("\n");
-        print_code(arbre);
+        if (arbre != NULL) {
+            printf("\n");
+            print_code(arbre);
+        } else {
+            fprintf(stderr, "Erreur : arbre non défini par le parseur.\n");
+        }
     }
-    exit(EXIT_SUCCESS);
 } 

@@ -8,11 +8,12 @@
 %}
 
 %union {
-    double num;
-    char* string;
+  double number;
+  char* string;
+  struct _expr_tree* ast;
+  struct _command_tree* comm;
 }
 
-%token NUMBER
 %token BOOLEAN
 %token TRUE FALSE AND OR NOT EQ NEQ LE GE LT GT
 %token ASSIGN
@@ -20,9 +21,9 @@
 %token <string> IDENT
 %start commande
 
-%union { double number; AST_expr ast; };
 %token <number> NUMBER
 %type <ast> expression
+%type <comm> commande
 
 %parse-param {AST_comm *rez}
 
@@ -38,12 +39,13 @@
 
 %%
 commande : 
-    expression ';'
-        | IMPORT IDENT ';' {printf("parse import ident: %s", $2);}
-        { *rez = new_command($1);}
+    expression ';' { *rez = new_command($1);}
+    | IMPORT IDENT ';' {*rez = make_import_command($2);}
+    ;
+        
 
 expression:
-    expression: expression '+' expression {$$ = new_binary_expr('+',$1,$3);}
+    expression '+' expression {$$ = new_binary_expr('+',$1,$3);}
     | expression '-' expression {$$ = new_binary_expr('-',$1,$3);}
     | expression '*' expression {$$ = new_binary_expr('*',$1,$3);}
     | expression '/' expression {$$ = new_binary_expr('/', $1, $3);}
