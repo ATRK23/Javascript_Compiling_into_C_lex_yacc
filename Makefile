@@ -1,9 +1,9 @@
 CC = gcc
 CFLAGS = -Wall -c -g
 
-all: compilateur
+all: main
 
-compilateur: main.o parseur.tab.o lex.yy.o AST.o
+main: main.o parseur.tab.o lex.yy.o AST.o
 	gcc -Wall $^ -o $@
 
 AST.o: AST.c AST.h
@@ -18,4 +18,4 @@ lex.yy.c: lexeur.l
 	flex lexeur.l
 
 clean:
-	rm -rf parseur.tab.* lex.yy.c main.o lex.yy.o AST.o compilateur
+	rm -rf parseur.tab.* lex.yy.c main.o lex.yy.o AST.o main
