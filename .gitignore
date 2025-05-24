@@ -1,0 +1,4 @@
+lex.yy.c
+parseur.tab.*
+main
+.vscode
