@@ -6,17 +6,17 @@
 %%
 0|[1-9][0-9]* { printf("lex: création token NUMBER %s\n",yytext);
     return NUMBER; }
-"true"      { return TRUE; }
-"false"     { return FALSE; }
-"&&"        { return AND; }
-"||"        { return OR; }
-"!"         { return NOT; }
-"=="        { return EQ; }
-"!="        { return NEQ; }
-"<="        { return LE; }
-">="        { return GE; }
-"<"         { return LT; }
-">"         { return GT; }
+"true"      { printf("lex: TRUE\n"); return TRUE; }
+"false"     { printf("lex: FALSE\n"); return FALSE; }
+"&&"        { printf("lex: AND\n"); return AND; }
+"||"        { printf("lex: OR\n"); return OR; }
+"!"         { printf("lex: NOT\n"); return NOT; }
+"=="        { printf("lex: EQ\n"); return EQ; }
+"!="        { printf("lex: NEQ\n"); return NEQ; }
+"<="        { printf("lex: LE\n"); return LE; }
+">="        { printf("lex: GE\n"); return GE; }
+"<"         { printf("lex: LT\n"); return LT; }
+">"         { printf("lex: GT\n"); return GT; }
 [ \t\r] { ; } 
 \n { printf("lex: fin de lecture");
     return 0; }
