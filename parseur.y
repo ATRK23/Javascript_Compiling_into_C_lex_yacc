@@ -32,7 +32,7 @@
 %left EQ NEQ
 %left LT LE GT GE
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
 %right NOT
 %right UMOINS
 
@@ -49,6 +49,7 @@ expression:
     | expression '-' expression {$$ = new_binary_expr('-',$1,$3);}
     | expression '*' expression {$$ = new_binary_expr('*',$1,$3);}
     | expression '/' expression {$$ = new_binary_expr('/', $1, $3);}
+    | expression '%' expression {printf("parse: MOD\n");}
     | expression AND expression {$$ = new_binary_expr('&', $1, $3);}
     | expression OR expression {$$ = new_binary_expr('|', $1, $3);}
     | expression EQ expression {$$ = new_binary_expr('E', $1, $3);}
