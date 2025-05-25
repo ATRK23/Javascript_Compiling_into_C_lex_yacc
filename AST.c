@@ -189,6 +189,16 @@ void print_code(AST_comm t) {
         printf("ConJmp -%d\n", total_size);
         break;
     }
+    
+    case 'X': {
+    printf("NewClot %s\n", t->import_name);
+    for (int i = 0; i < t->arg_count; ++i) {
+        printf("DclArg %s\n", t->args[i]);
+    }
+    print_code(t->if_block);
+    printf("Return\n");
+    break;
+  }
 
     default: {
       print_code_expr(t->expr1);
@@ -345,6 +355,21 @@ AST_expr new_call_expr(char* name, AST_expr* args, int count) {
     printf("ERR : MALLOC ");
   }
   return t;
+}
+
+AST_comm make_function_declaration(char* name, char** args, int count, AST_comm body) {
+    AST_comm t = malloc(sizeof(struct _command_tree));
+    if (t != NULL) {
+        t->rule = 'X'; // 'X' pour fonction
+        t->import_name = strdup(name);
+        t->args = args;
+        t->arg_count = count;
+        t->if_block = body;
+        t->expr1 = NULL;
+        t->next = NULL;
+        t->else_block = NULL;
+    }
+    return t;
 }
 
 

@@ -13,6 +13,7 @@
   char* string;
   struct _expr_tree* ast;
   struct _command_tree* comm;
+  char** string_list;
 }
 
 %token BOOLEAN
@@ -23,6 +24,7 @@
 %token DO WHILE
 %token <string> IDENT
 %token IF ELSE
+%token FUNCTION RETURN
 
 %start top
 
@@ -32,6 +34,8 @@
 %type <comm> block
 %type <ast> arguments
 %type <ast> argument_list
+%type <string_list> param_list
+
 
 
 %parse-param {AST_comm *rez}
@@ -59,16 +63,25 @@ block :
   | commande block          { $$ = append_comm($1, $2); }
   ;
 
-commande : expression ';'                    { $$ = new_command($1); }
-  | IDENT ASSIGN expression ';'       { $$ = new_command(new_assign_expr($1, $3)); }
-  | IF '(' expression ')' commande ELSE commande   { $$ = make_if_command($3, $5, $7); }
-  | DROP ';' {printf("parse command drop\n");}
-  | DO commande WHILE '(' expression ')' ';' { $$ = make_do_while_command($2, $5); }
-  | DO block WHILE '(' expression ')' ';'    { $$ = make_do_while_command($2, $5); }
-  | IMPORT IDENT ';' { $$ = make_import_command($2);}
-  | ';' { $$ = NULL; }
-  | '{' block '}' { $$ = $2; }
-  ;
+commande :
+        | FUNCTION IDENT '(' param_list ')' '{' block '}' {
+        $$ = make_function_declaration($2, $4, yynerrs, $7);
+        }
+        | RETURN expression ';' {
+            printf("parse: RETURN\n");
+            $$ = new_command($2);  // Ajoute cette ligne
+        }
+        | expression ';'
+            { $$ = new_command($1); }
+        | IDENT ASSIGN expression ';'       { $$ = new_command(new_assign_expr($1, $3)); }
+        | IF '(' expression ')' commande ELSE commande   { $$ = make_if_command($3, $5, $7); }
+        | DROP ';' {printf("parse command drop\n");}
+        | DO commande WHILE '(' expression ')' ';' { $$ = make_do_while_command($2, $5); }
+        | DO block WHILE '(' expression ')' ';'    { $$ = make_do_while_command($2, $5); }
+        | IMPORT IDENT ';' { $$ = make_import_command($2);}
+        | ';' { $$ = NULL; }
+        | '{' block '}' { $$ = $2; }
+        ;
 
 expression:
     expression '+' expression {$$ = new_binary_expr('+',$1,$3);}
@@ -94,6 +107,23 @@ expression:
     | IDENT { $$ = new_var_expr($1); }
     | IDENT '(' arguments ')' { $$ = new_call_expr($1, $3->args, $3->arg_count); }
     ;
+
+param_list :
+      /* aucun argument */ {
+        $$ = NULL;
+        yynerrs = 0;
+    }
+    | IDENT {
+        $$ = malloc(sizeof(char*) * 1);
+        $$[0] = $1;
+        yynerrs = 1;
+    }
+    | param_list ',' IDENT {
+        $$ = realloc($1, sizeof(char*) * (yynerrs + 1));
+        $$[yynerrs++] = $3;
+    }
+    ;
+
 
 arguments:
     /* aucun argument */ {

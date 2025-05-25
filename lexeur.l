@@ -47,6 +47,9 @@ NaN|nan { yylval.number = 0.0/0.0; return NUMBER; }
 "do"    { return DO; }
 "while" { return WHILE; }
 
+"function"  { return FUNCTION; }
+"return"    { return RETURN; }
+
 [a-zA-Z_][a-zA-Z0-9_]* {
     if (
         strcmp(yytext, "true") == 0 || strcmp(yytext, "false") == 0 ||

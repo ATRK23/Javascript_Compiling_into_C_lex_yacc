@@ -21,6 +21,8 @@ struct _command_tree {
   struct _command_tree* next;
   struct _command_tree* if_block;
   struct _command_tree* else_block;
+  char** args;
+  int arg_count;
 };
 
 typedef struct _command_tree* AST_comm;
@@ -51,15 +53,17 @@ AST_expr new_assign_expr(char* name, AST_expr expr);
 /* Crée noeud pour une variable utilisée (ex: x dans x + 1) */
 AST_expr new_var_expr(char* name);
 
-//Simplifie l’arbre en évaluant les expressions constantes 
+//Simplifie l’arbre en évaluant les expressions constantes
 AST_expr fold_constants(AST_expr t);
 
-//Fonction pour gerer le if 
+//Fonction pour gerer le if
 AST_comm make_if_command(AST_expr cond, AST_comm if_cmd, AST_comm else_cmd);
 
 AST_comm make_do_while_command(AST_comm body, AST_expr cond);
 
 AST_expr new_call_expr(char* name, AST_expr* args, int count);
+
+AST_comm make_function_declaration(char* name, char** args, int count, AST_comm body);
 
 // Cette fonction vérifie si une expression est 100% constante
 int is_const_expr(AST_expr t);
