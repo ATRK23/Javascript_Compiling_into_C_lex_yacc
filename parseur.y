@@ -41,16 +41,17 @@
 
 %%
 top : program { *rez = $1; }
-          ;
+    ;
 
 program : commande { $$ = $1; }
         | commande program { $$ = append_comm($1, $2); }
         ;
 
-commande : expression ';' { $$ = new_command($1); }
-        | IMPORT IDENT ';' { $$ = make_import_command($2); }
-        | DROP ';' { $$ = NULL; printf("parse command drop\n"); }
-        ;
+commande :
+    expression ';'                    { $$ = new_command($1); }
+  | IDENT ASSIGN expression ';'       { $$ = new_command(new_assign_expr($1, $3)); }
+  ;
+
 
 expression:
     expression '+' expression {$$ = new_binary_expr('+',$1,$3);}
@@ -72,7 +73,7 @@ expression:
     | TRUE {$$ = new_boolean_expr(1);}
     | FALSE {$$ = new_boolean_expr(0);}
     | NUMBER {$$ = new_number_expr($1);}
-    | IDENT ASSIGN expression {printf("parse assignation: %s\n", $1);}
+    | IDENT { $$ = new_var_expr($1); }
     ;
 %%
     

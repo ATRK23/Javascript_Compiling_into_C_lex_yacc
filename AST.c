@@ -87,11 +87,9 @@ void print_comm(AST_comm t){
 }
 
 void print_code_expr(AST_expr ex){
-  if(ex == NULL) {
-    return;
-  }
+  if (ex == NULL) return;
 
-  if(ex->rule == '&'){
+  if (ex->rule == '&') {
     print_code_expr(ex->left); 
     printf("ConJmp %d\n", ex->right->taille + 1);
     print_code_expr(ex->right);
@@ -100,17 +98,23 @@ void print_code_expr(AST_expr ex){
     return;
   }
 
+  if (ex->rule == '=') {
+    print_code_expr(ex->left);  // valeur à affecter
+    printf("SetVar %s\n", ex->varname);
+    return;
+  }
+
   print_code_expr(ex->left);
   print_code_expr(ex->right);
 
-  switch (ex->rule){
-    case 'N' : printf("CsteNb %f\n", ex->number);break;
-    case '+' : printf("AddiNb\n");break;
-    case '*' : printf("MultNb\n");break;
-    case '-' : printf("SubiNb\n");break;
-    case '/' : printf("DiviNb\n");break;
-    case '%' : printf("ModuNb\n");break;
-    case 'M' : printf("NegaNb\n");break;
+  switch (ex->rule) {
+    case 'N' : printf("CsteNb %f\n", ex->number); break;
+    case '+' : printf("AddiNb\n"); break;
+    case '*' : printf("MultNb\n"); break;
+    case '-' : printf("SubiNb\n"); break;
+    case '/' : printf("DiviNb\n"); break;
+    case '%' : printf("ModuNb\n"); break;
+    case 'M' : printf("NegaNb\n"); break;
     case 'T' : printf("CsteBool true\n"); break;
     case 'F' : printf("CsteBool false\n"); break;
     case '|' : printf("OrBool\n"); break;
@@ -121,8 +125,10 @@ void print_code_expr(AST_expr ex){
     case 'l' : printf("LeBool\n"); break;
     case '>' : printf("GtBool\n"); break;
     case 'g' : printf("GeBool\n"); break;
+    case 'V' : printf("GetVar %s\n", ex->varname); break;
   }
 }
+
 
 void print_code(AST_comm t) {
   if (t->rule == 'I') {
@@ -177,4 +183,29 @@ AST_comm append_comm(AST_comm c1, AST_comm c2) { //Fusionner arbres
   current->next = c2;
   return c1;
 }
+
+AST_expr new_var_expr(char* name) {
+  AST_expr t = malloc(sizeof(struct _expr_tree));
+  if (t != NULL) {
+    t->rule = 'V';  // V pour variable utilisée
+    t->varname = strdup(name);
+    t->left = NULL;
+    t->right = NULL;
+    t->taille = 1;
+  } else printf("ERR : MALLOC ");
+  return t;
+}
+
+AST_expr new_assign_expr(char* name, AST_expr expr) {
+  AST_expr t = malloc(sizeof(struct _expr_tree));
+  if (t != NULL) {
+    t->rule = '=';
+    t->varname = strdup(name);
+    t->left = expr;
+    t->right = NULL;
+    t->taille = 1 + (expr ? expr->taille : 0);
+  } else printf("ERR : MALLOC ");
+  return t;
+}
+
 

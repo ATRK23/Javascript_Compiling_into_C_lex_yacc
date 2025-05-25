@@ -5,6 +5,7 @@ struct _expr_tree {
   char rule;                    /* "name" of the rule/operation operation */
   double number;                   /* int  for value */
   int taille;
+  char* varname;                     /* contenir le nom de la variable*/
   struct _expr_tree* left;           /* NULL   if unary node or leaf*/
   struct _expr_tree* right;          /* used for unary node but NULL if leaf */
 };
@@ -37,7 +38,14 @@ AST_comm make_import_command(char* name);
 /* function for boolean expression */
 AST_expr new_boolean_expr(int value);
 
+/* fusionner arbres */
 AST_comm append_comm(AST_comm c1, AST_comm c2);
+
+/* créer noeud pour une affectation (ex: x = expr) */
+AST_expr new_assign_expr(char* name, AST_expr expr);
+
+/* Crée noeud pour une variable utilisée (ex: x dans x + 1) */
+AST_expr new_var_expr(char* name);
 
 /* delete an AST */
 void free_expr(AST_expr t);
