@@ -106,6 +106,7 @@ void print_code_expr(AST_expr ex){
     case '*' : printf("MultNb\n");break;
     case '-' : printf("SubiNb\n");break;
     case '/' : printf("DiviNb\n");break;
+    case '%' : printf("ModuNb\n");break;
     case 'M' : printf("NegaNb\n");break;
     case 'T' : printf("CsteBool true\n"); break;
     case 'F' : printf("CsteBool false\n"); break;

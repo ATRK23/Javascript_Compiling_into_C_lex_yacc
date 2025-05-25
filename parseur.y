@@ -49,7 +49,7 @@ expression:
     | expression '-' expression {$$ = new_binary_expr('-',$1,$3);}
     | expression '*' expression {$$ = new_binary_expr('*',$1,$3);}
     | expression '/' expression {$$ = new_binary_expr('/', $1, $3);}
-    | expression '%' expression {printf("parse: MOD\n");}
+    | expression '%' expression {$$ = new_binary_expr('%', $1, $3);}
     | expression AND expression {$$ = new_binary_expr('&', $1, $3);}
     | expression OR expression {$$ = new_binary_expr('|', $1, $3);}
     | expression EQ expression {$$ = new_binary_expr('E', $1, $3);}
