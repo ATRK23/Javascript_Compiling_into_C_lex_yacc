@@ -50,7 +50,7 @@ commande : expression ';'
         | DROP ';' {printf("parse command drop\n");}
         | DO expression WHILE '(' expression ')' ';' {printf("parse command : do while\n");}
         | DO block WHILE '(' expression ')' ';'    {printf("parse command : do while\n");}
-        | IF '(' expression ')' block ELSE block   { printf("parse command : if then else\n");}
+        | IF '(' expression ')' commande ELSE commande   { printf("parse command : if then else\n");}
         | ';' {;}
         | '{' block '}' {;}
          ;
