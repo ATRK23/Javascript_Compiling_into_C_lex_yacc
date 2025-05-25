@@ -35,10 +35,30 @@ NaN|nan { return NUMBER; }
 
 "drop"|"DROP" { printf("lex: drop\n"); return DROP; }
 
+"if"    { return IF; }
+"else"  { return ELSE; }
+"("    { return '('; }
+")"    { return ')'; }
+
+"{"    { return '{'; }
+"}"    { return '}'; } 
+
 "do"    { return DO; }
 "while" { return WHILE; }
 
-[a-zA-Z_][a-zA-Z0-9_]*   { yylval.string = strdup(yytext); return IDENT; }
+[a-zA-Z_][a-zA-Z0-9_]*   { 
+    if (
+        strcmp(yytext, "true") == 0 || strcmp(yytext, "false") == 0 ||
+        strcmp(yytext, "if") == 0 || strcmp(yytext, "else") == 0 ||
+        strcmp(yytext, "do") == 0 || strcmp(yytext, "while") == 0 ||
+        strcmp(yytext, "import") == 0 || strcmp(yytext, "drop") == 0
+    ) {
+        fprintf(stderr, "Erreur : '%s' est un mot cle reserve !\n", yytext);
+        exit(1);
+    }
+    yylval.string = strdup(yytext);
+    return IDENT;
+}
 
 \n { printf("lex: fin de lecture\n");
     return 0; }

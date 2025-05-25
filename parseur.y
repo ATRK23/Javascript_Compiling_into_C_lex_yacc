@@ -17,8 +17,9 @@
 %token DROP
 %token DO WHILE
 %token <string> IDENT
+%token IF ELSE
 
-%start program
+%start top
 
 %left OR
 %left AND
@@ -31,14 +32,27 @@
 
 
 %%
+top : program { ; }
+    ;
+
+
 program : /* vide */ {;}
-        | commande program
+        | commande program {;}
         ;
+
+block : commande                  { ; }
+        | commande block          { ; }
+        ;
+
 
 commande : expression ';'
         | IMPORT IDENT ';' {printf("parse import ident: %s\n", $2);}
         | DROP ';' {printf("parse command drop\n");}
-        | DO expression WHILE '(' expression ')' ';' {printf("parse command : do while");}
+        | DO expression WHILE '(' expression ')' ';' {printf("parse command : do while\n");}
+        | DO block WHILE '(' expression ')' ';'    {printf("parse command : do while\n");}
+        | IF '(' expression ')' block ELSE block   { printf("parse command : if then else\n");}
+        | ';' {;}
+        | '{' block '}' {;}
          ;
 
 expression:
@@ -62,7 +76,18 @@ expression:
     | FALSE {printf("parse: FALSE\n");}
     | NUMBER {printf("parse: NUMBER\n");}
     | IDENT ASSIGN expression {printf("parse assignation: %s\n", $1);}
+    | IDENT '(' arguments ')' {printf("parse: IDENT with arguments\n");}
+    | IDENT {printf("parse: IDENT\n");}
     ;
+
+arguments: /* aucun argument */ {;}
+    | argument_list {;}
+    ;
+
+argument_list: expression {;}
+    | argument_list ',' expression {;}
+    ;
+
 %%
     
 int yyerror(const char *msg){
