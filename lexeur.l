@@ -46,6 +46,9 @@ NaN|nan { return NUMBER; }
 "do"    { return DO; }
 "while" { return WHILE; }
 
+"function"  { return FUNCTION; }
+"return"    { return RETURN; }
+
 [a-zA-Z_][a-zA-Z0-9_]*   { yylval.string = strdup(yytext); return IDENT; }
 
 \n { printf("lex: fin de lecture\n");

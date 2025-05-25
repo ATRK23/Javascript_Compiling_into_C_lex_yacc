@@ -18,6 +18,7 @@
 %token DO WHILE
 %token <string> IDENT
 %token IF ELSE
+%token FUNCTION RETURN
 
 %start top
 
@@ -45,7 +46,14 @@ block : commande                  { ; }
         ;
 
 
-commande : expression ';'
+commande :
+        FUNCTION IDENT '(' param_list ')' '{' block '}' {
+            printf("parse: DECL FUNCTION %s\n", $2);
+        }
+        | RETURN expression ';' {
+            printf("parse: RETURN\n");
+        }
+        | expression ';'
         | IMPORT IDENT ';' {printf("parse import ident: %s\n", $2);}
         | DROP ';' {printf("parse command drop\n");}
         | DO expression WHILE '(' expression ')' ';' {printf("parse command : do while\n");}
@@ -53,10 +61,16 @@ commande : expression ';'
         | IF '(' expression ')' commande ELSE commande   { printf("parse command : if then else\n");}
         | ';' {;}
         | '{' block '}' {;}
-         ;
+        ;
+
+param_list :
+      /* aucun argument */ { printf("parse: empty param list\n"); }
+    | IDENT { printf("parse: param %s\n", $1); }
+    | param_list ',' IDENT { printf("parse: param %s\n", $3); }
+    ;
 
 expression:
-    expression: expression '+' expression {printf("parse: ADD\n");}
+    expression '+' expression {printf("parse: ADD\n");}
     | expression '-' expression {printf("parse: SUB\n");}
     | expression '*' expression {printf("parse: MUL\n");}
     | expression '/' expression {printf("parse: DIV\n");}
