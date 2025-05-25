@@ -2,6 +2,7 @@
 
 %{ // the code between %{ and %} is copied at the start of the generated .c
     #include <stdio.h>
+    #include <stdlib.h>
     #include "AST.h"
     int yylex(void); // declared to avoid implicit call
     int yyerror(AST_comm *rez, const char*); // on generated functions
@@ -21,7 +22,6 @@
 %token DROP
 %token DO WHILE
 %token <string> IDENT
-%token IF ELSE
 %token IF ELSE
 
 %start top
@@ -65,6 +65,7 @@ commande : expression ';'                    { $$ = new_command($1); }
   | DROP ';' {printf("parse command drop\n");}
   | DO commande WHILE '(' expression ')' ';' { $$ = make_do_while_command($2, $5); }
   | DO block WHILE '(' expression ')' ';'    { $$ = make_do_while_command($2, $5); }
+  | IMPORT IDENT ';' { $$ = make_import_command($2);}
   | ';' { $$ = NULL; }
   | '{' block '}' { $$ = $2; }
   ;
