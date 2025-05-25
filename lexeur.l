@@ -35,6 +35,9 @@ NaN|nan { return NUMBER; }
 
 "drop"|"DROP" { printf("lex: drop\n"); return DROP; }
 
+"do"    { return DO; }
+"while" { return WHILE; }
+
 [a-zA-Z_][a-zA-Z0-9_]*   { yylval.string = strdup(yytext); return IDENT; }
 
 \n { printf("lex: fin de lecture\n");
