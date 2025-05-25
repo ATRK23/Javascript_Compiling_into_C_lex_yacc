@@ -4,10 +4,13 @@
 %}
 
 %%
-0|[1-9][0-9]* { yylval.num = atoi(yytext); printf("lex: création token NUMBER %s\n",yytext);
-    return NUMBER; }
+0|[1-9][0-9]* { yylval.num = atoi(yytext);
+                printf("lex: création token NUMBER %s\n",yytext);
+                return NUMBER; }
 
-[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?|[0-9]+([eE][-+]?[0-9]+)? {yylval.num = atof(yytext); return NUMBER; }
+[0-9]*\.[0-9]+([eE][-+]?[0-9]+)?|[0-9]+([eE][-+]?[0-9]+)? {yylval.num = atof(yytext);
+                                                            return NUMBER; }
+
 NaN|nan { return NUMBER; }
 
 "true"      { printf("lex: TRUE\n"); return TRUE; }
@@ -23,16 +26,17 @@ NaN|nan { return NUMBER; }
 ">"         { printf("lex: GT\n"); return GT; }
 
 [ \t\r] { ; }
-\n { printf("lex: fin de lecture");
-    return 0; }
 
 "//".*                          { /* commentaire monoligne : ignoré */ }
 "/*"([^*]*|\*+[^*/])*"*"+"/"    { /* commentaire multiligne : ignoré */ }
 
 "=" {return ASSIGN;}
 "import" {return IMPORT; }
+
 [a-zA-Z_][a-zA-Z0-9_]*   { yylval.string = strdup(yytext); return IDENT; }
 
+\n { printf("lex: fin de lecture\n");
+    return 0; }
 
 . { printf(" lex: création token %s\n",yytext);
     return yytext[0]; }

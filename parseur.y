@@ -15,7 +15,8 @@
 %token ASSIGN
 %token IMPORT
 %token <string> IDENT
-%start commande
+
+%start program
 
 %left OR
 %left AND
@@ -28,8 +29,12 @@
 
 
 %%
+program : /* vide */ {;}
+        | commande program
+        ;
+
 commande : expression ';'
-        | IMPORT IDENT ';' {printf("parse import ident: %s", $2);}
+        | IMPORT IDENT ';' {printf("parse import ident: %s\n", $2);}
          ;
 
 expression:
@@ -52,7 +57,7 @@ expression:
     | TRUE {printf("parse: TRUE\n");}
     | FALSE {printf("parse: FALSE\n");}
     | NUMBER {printf("parse: NUMBER\n");}
-    | IDENT ASSIGN expression {printf("parse assignation: %s", $1);}
+    | IDENT ASSIGN expression {printf("parse assignation: %s\n", $1);}
     ;
 %%
     
