@@ -157,8 +157,7 @@ AST_expr new_boolean_expr(int value)
   return t;
 }
 
-AST_comm make_import_command(char* name) {
-  printf("Import command for: %s\n", name);
+AST_comm make_import_command(char* name) {  //Importer les fichiers xjsm
   AST_comm t = malloc(sizeof(struct _command_tree));
   if (t != NULL) {
     t->rule = 'I'; // I pour Import
@@ -171,7 +170,7 @@ AST_comm make_import_command(char* name) {
   return t;
 }
 
-AST_comm append_comm(AST_comm c1, AST_comm c2) {
+AST_comm append_comm(AST_comm c1, AST_comm c2) { //Fusionner arbres
   if (!c1) return c2;
   AST_comm current = c1;
   while (current->next) current = current->next;
