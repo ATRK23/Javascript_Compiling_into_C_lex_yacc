@@ -22,6 +22,7 @@
 %token DO WHILE
 %token <string> IDENT
 %token IF ELSE
+%token IF ELSE
 
 %start top
 
@@ -60,7 +61,7 @@ block :
 
 commande : expression ';'                    { $$ = new_command($1); }
   | IDENT ASSIGN expression ';'       { $$ = new_command(new_assign_expr($1, $3)); }
-  | IF '(' expression ')' block ELSE block   { $$ = make_if_command($3, $5, $7); }
+  | IF '(' expression ')' commande ELSE commande   { $$ = make_if_command($3, $5, $7); }
   | DROP ';' {printf("parse command drop\n");}
   | DO commande WHILE '(' expression ')' ';' { $$ = make_do_while_command($2, $5); }
   | DO block WHILE '(' expression ')' ';'    { $$ = make_do_while_command($2, $5); }
@@ -88,6 +89,7 @@ expression:
     | TRUE {$$ = new_boolean_expr(1);}
     | FALSE {$$ = new_boolean_expr(0);}
     | NUMBER {$$ = new_number_expr($1);}
+    | IDENT ASSIGN expression {printf("parse assignation: %s\n", $1);}
     | IDENT { $$ = new_var_expr($1); }
     | IDENT '(' arguments ')' { $$ = new_call_expr($1, $3->args, $3->arg_count); }
     ;
