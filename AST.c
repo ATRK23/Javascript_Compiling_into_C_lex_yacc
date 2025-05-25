@@ -133,25 +133,57 @@ void print_code_expr(AST_expr ex){
 
 
 void print_code(AST_comm t) {
-  if (t->rule == 'I') {
-    char path[256];
-    snprintf(path, sizeof(path), "%s.jsm", t->import_name);
-    FILE* f = fopen(path, "r");
-    if (!f) {
-      fprintf(stderr, "Erreur : fichier d'import introuvable : %s\n", path);
-      exit(1);
-    }
-    char buffer[512];
-    while (fgets(buffer, sizeof(buffer), f)) {
-      if (strncmp(buffer, "Halt", 4) != 0) {  // Optionnel : ignorer Halt
-        printf("%s", buffer);
+  if (t == NULL) return;
+
+  switch (t->rule) {
+
+    case 'I': {
+      char path[256];
+      snprintf(path, sizeof(path), "%s.jsm", t->import_name);
+      FILE* f = fopen(path, "r");
+      if (!f) {
+        fprintf(stderr, "Erreur : fichier d'import introuvable : %s\n", path);
+        exit(1);
       }
+      char buffer[512];
+      while (fgets(buffer, sizeof(buffer), f)) {
+        if (strncmp(buffer, "Halt", 4) != 0) {
+          printf("%s", buffer);
+        }
+      }
+      fclose(f);
+      break;
     }
-    fclose(f);
-  } else {
-    print_code_expr(t->expr1);
+
+    case 'F': {
+      AST_expr cond = t->expr1;
+      AST_comm if_cmd = t->if_block;
+      AST_comm else_cmd = t->else_block;
+
+      print_code_expr(cond);
+
+      int then_size = (if_cmd && if_cmd->expr1) ? if_cmd->expr1->taille + 1 : 1;
+      int else_size = (else_cmd && else_cmd->expr1) ? else_cmd->expr1->taille : 0;
+
+      printf("ConJmp %d\n", then_size);
+      print_code(if_cmd);
+      printf("Jump %d\n", else_size);
+      print_code(else_cmd);
+      break;
+    }
+
+    default: {
+      print_code_expr(t->expr1);
+      break;
+    }
+  }
+  if (t->next) {
+    print_code(t->next);
   }
 }
+
+
+
 
 AST_expr new_boolean_expr(int value)
 {
@@ -246,10 +278,28 @@ AST_expr fold_constants(AST_expr t) {
     case 'l': return new_boolean_expr(l <= r);
     case '>': return new_boolean_expr(l > r);
     case 'g': return new_boolean_expr(l >= r);
-    case 'M': return new_number_expr(-r); // -x
-    case '!': return new_boolean_expr(!r); // !x
+    case 'M': return new_number_expr(-r);
+    case '!': return new_boolean_expr(!r);
     default: return t;
   }
 }
+
+AST_comm make_if_command(AST_expr cond, AST_comm if_cmd, AST_comm else_cmd) {
+  AST_comm t = malloc(sizeof(struct _command_tree));
+  if (t != NULL) {
+    t->rule = 'F';
+    t->expr1 = cond;
+    t->import_name = NULL;
+    t->next = NULL;
+    t->if_block = if_cmd;
+    t->else_block = else_cmd;
+  } else {
+    printf("ERR : MALLOC ");
+  }
+  return t;
+}
+
+
+
 
 

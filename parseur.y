@@ -20,12 +20,15 @@
 %token IMPORT
 %token DROP
 %token <string> IDENT
+%token IF ELSE
 
 %start top
 
 %token <number> NUMBER
 %type <ast> expression
 %type <comm> program commande top
+%type <comm> block
+
 
 %parse-param {AST_comm *rez}
 
@@ -47,10 +50,17 @@ program : commande { $$ = $1; }
         | commande program { $$ = append_comm($1, $2); }
         ;
 
+block :
+    commande                { $$ = $1; }
+  | commande block          { $$ = append_comm($1, $2); }
+  ;
+
 commande :
     expression ';'                    { $$ = new_command($1); }
   | IDENT ASSIGN expression ';'       { $$ = new_command(new_assign_expr($1, $3)); }
+  | IF '(' expression ')' block ELSE block   { $$ = make_if_command($3, $5, $7); }
   ;
+
 
 
 expression:

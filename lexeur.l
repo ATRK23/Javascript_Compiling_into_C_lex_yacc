@@ -34,6 +34,11 @@ NaN|nan { yylval.number = 0.0/0.0; return NUMBER; }
 
 "drop"|"DROP" { printf("lex: drop\n"); return DROP; }
 
+"if"    { return IF; }
+"else"  { return ELSE; }
+"("     { return '('; }
+")"     { return ')'; }
+
 [a-zA-Z_][a-zA-Z0-9_]*   { yylval.string = strdup(yytext); return IDENT; }
 
 \n { printf("lex: fin de lecture\n\n");
