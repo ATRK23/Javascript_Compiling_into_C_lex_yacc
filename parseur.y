@@ -19,6 +19,7 @@
 %token ASSIGN
 %token IMPORT
 %token DROP
+%token DO WHILE
 %token <string> IDENT
 %token IF ELSE
 
@@ -55,13 +56,12 @@ block :
   | commande block          { $$ = append_comm($1, $2); }
   ;
 
-commande :
-    expression ';'                    { $$ = new_command($1); }
+commande : expression ';'                    { $$ = new_command($1); }
   | IDENT ASSIGN expression ';'       { $$ = new_command(new_assign_expr($1, $3)); }
   | IF '(' expression ')' block ELSE block   { $$ = make_if_command($3, $5, $7); }
+  | DROP ';' {printf("parse command drop\n");}
+  | DO expression WHILE '(' expression ')' ';' {printf("parse command : do while");}
   ;
-
-
 
 expression:
     expression '+' expression {$$ = new_binary_expr('+',$1,$3);}
