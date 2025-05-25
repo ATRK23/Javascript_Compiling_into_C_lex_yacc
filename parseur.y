@@ -14,6 +14,7 @@
 %token TRUE FALSE AND OR NOT EQ NEQ LE GE LT GT
 %token ASSIGN
 %token IMPORT
+%token DROP
 %token <string> IDENT
 
 %start program
@@ -35,6 +36,7 @@ program : /* vide */ {;}
 
 commande : expression ';'
         | IMPORT IDENT ';' {printf("parse import ident: %s\n", $2);}
+        | DROP ';' {printf("parse command drop\n");}
          ;
 
 expression:

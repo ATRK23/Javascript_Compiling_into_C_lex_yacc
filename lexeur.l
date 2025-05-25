@@ -33,6 +33,8 @@ NaN|nan { return NUMBER; }
 "=" {return ASSIGN;}
 "import" {return IMPORT; }
 
+"drop"|"DROP" { printf("lex: drop\n"); return DROP; }
+
 [a-zA-Z_][a-zA-Z0-9_]*   { yylval.string = strdup(yytext); return IDENT; }
 
 \n { printf("lex: fin de lecture\n");
