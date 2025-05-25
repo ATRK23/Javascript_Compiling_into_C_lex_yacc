@@ -36,8 +36,11 @@ NaN|nan { yylval.number = 0.0/0.0; return NUMBER; }
 
 "if"    { return IF; }
 "else"  { return ELSE; }
-"("|"{"     { return '('; }
-")"|"}"     { return ')'; }
+"("    { return '('; }
+")"    { return ')'; }
+
+"{"    { return '{'; }
+"}"    { return '}'; } 
 
 "do"    { return DO; }
 "while" { return WHILE; }

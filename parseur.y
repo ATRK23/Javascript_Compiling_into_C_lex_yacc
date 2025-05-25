@@ -62,6 +62,8 @@ commande : expression ';'                    { $$ = new_command($1); }
   | DROP ';' {printf("parse command drop\n");}
   | DO commande WHILE '(' expression ')' ';' { $$ = make_do_while_command($2, $5); }
   | DO block WHILE '(' expression ')' ';'    { $$ = make_do_while_command($2, $5); }
+  | ';' { $$ = NULL; }
+  | '{' block '}' { $$ = $2; }
   ;
 
 expression:
