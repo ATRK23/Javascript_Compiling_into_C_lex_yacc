@@ -22,7 +22,7 @@
 %left EQ NEQ
 %left LT LE GT GE
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
 %right NOT
 %right UMOINS
 
@@ -37,6 +37,7 @@ expression:
     | expression '-' expression {printf("parse: SUB\n");}
     | expression '*' expression {printf("parse: MUL\n");}
     | expression '/' expression {printf("parse: DIV\n");}
+    | expression '%' expression {printf("parse: MOD\n");}
     | expression AND expression {printf("parse: AND\n");}
     | expression OR expression {printf("parse: OR\n");}
     | expression EQ expression {printf("parse: EQ\n");}
