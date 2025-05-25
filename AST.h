@@ -47,6 +47,12 @@ AST_expr new_assign_expr(char* name, AST_expr expr);
 /* Crée noeud pour une variable utilisée (ex: x dans x + 1) */
 AST_expr new_var_expr(char* name);
 
+//simplifie l’arbre en évaluant les expressions constantes 
+AST_expr fold_constants(AST_expr t);
+
+// Cette fonction vérifie si une expression est 100% constante
+int is_const_expr(AST_expr t);
+
 /* delete an AST */
 void free_expr(AST_expr t);
 void free_comm(AST_comm t);

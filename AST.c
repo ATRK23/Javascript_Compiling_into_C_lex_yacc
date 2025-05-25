@@ -37,9 +37,10 @@ AST_expr new_number_expr(double number)
 
 AST_comm new_command(AST_expr expression){
   AST_comm t = malloc(sizeof(struct _command_tree));
-  if (t!=NULL){	/* malloc ok */
+  if (t!=NULL){
+    expression = fold_constants(expression); //construire l'AST optimise 
     t->expr1 = expression;
-    t->rule = 'v'; // <- marque comme expression normale
+    t->rule = 'v';
     t->next = NULL;
     t->import_name = NULL;
   } else {
@@ -47,6 +48,7 @@ AST_comm new_command(AST_expr expression){
   }
   return t;
 }
+
 
 /* delete an AST */
 void free_expr(AST_expr t)
@@ -206,6 +208,48 @@ AST_expr new_assign_expr(char* name, AST_expr expr) {
     t->taille = 1 + (expr ? expr->taille : 0);
   } else printf("ERR : MALLOC ");
   return t;
+}
+
+//cette fonction vérifie si une expression est 100% constante
+int is_const_expr(AST_expr t) {
+  if (!t) return 1;
+  if (t->rule == 'N' || t->rule == 'T' || t->rule == 'F') return 1;
+  if (t->rule == 'V') return 0; // c’est une variable
+  return is_const_expr(t->left) && is_const_expr(t->right);
+}
+
+
+//simplifie l’arbre en évaluant les expressions constantes 
+AST_expr fold_constants(AST_expr t) {
+  if (!t) return NULL;
+
+  // d’abord on simplifie récursivement les sous-expressions
+  t->left = fold_constants(t->left);
+  t->right = fold_constants(t->right);
+
+  // si ce n’est PAS une expression 100% constante, on ne fait rien
+  if (!is_const_expr(t)) return t;
+
+  // on calcule la valeur
+  double l = t->left ? t->left->number : 0;
+  double r = t->right ? t->right->number : 0;
+
+  switch (t->rule) {
+    case '+': return new_number_expr(l + r);
+    case '-': return new_number_expr(l - r);
+    case '*': return new_number_expr(l * r);
+    case '/': return new_number_expr(r != 0 ? l / r : 0);
+    case '%': return new_number_expr((int)l % (int)r);
+    case 'E': return new_boolean_expr(l == r);
+    case 'D': return new_boolean_expr(l != r);
+    case '<': return new_boolean_expr(l < r);
+    case 'l': return new_boolean_expr(l <= r);
+    case '>': return new_boolean_expr(l > r);
+    case 'g': return new_boolean_expr(l >= r);
+    case 'M': return new_number_expr(-r); // -x
+    case '!': return new_boolean_expr(!r); // !x
+    default: return t;
+  }
 }
 
 
