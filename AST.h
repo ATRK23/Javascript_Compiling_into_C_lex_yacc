@@ -15,6 +15,7 @@ struct _command_tree {
   char rule;                    /* "name" of the rule/operation operation */
   AST_expr expr1;
   char* import_name;     	        /* used for command with at least one sub-expression */
+  struct _command_tree* next;
 };
 
 typedef struct _command_tree* AST_comm;
@@ -36,6 +37,7 @@ AST_comm make_import_command(char* name);
 /* function for boolean expression */
 AST_expr new_boolean_expr(int value);
 
+AST_comm append_comm(AST_comm c1, AST_comm c2);
 
 /* delete an AST */
 void free_expr(AST_expr t);

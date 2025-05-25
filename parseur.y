@@ -18,12 +18,14 @@
 %token TRUE FALSE AND OR NOT EQ NEQ LE GE LT GT
 %token ASSIGN
 %token IMPORT
+%token DROP
 %token <string> IDENT
-%start commande
+
+%start top
 
 %token <number> NUMBER
 %type <ast> expression
-%type <comm> commande
+%type <comm> program commande top
 
 %parse-param {AST_comm *rez}
 
@@ -38,11 +40,17 @@
 
 
 %%
-commande : 
-    expression ';' { *rez = new_command($1);}
-    | IMPORT IDENT ';' {*rez = make_import_command($2);}
-    ;
-        
+top : program { *rez = $1; }
+          ;
+
+program : commande { $$ = $1; }
+        | commande program { $$ = append_comm($1, $2); }
+        ;
+
+commande : expression ';' { $$ = new_command($1); }
+        | IMPORT IDENT ';' { $$ = make_import_command($2); }
+        | DROP ';' { $$ = NULL; printf("parse command drop\n"); }
+        ;
 
 expression:
     expression '+' expression {$$ = new_binary_expr('+',$1,$3);}
@@ -64,7 +72,7 @@ expression:
     | TRUE {$$ = new_boolean_expr(1);}
     | FALSE {$$ = new_boolean_expr(0);}
     | NUMBER {$$ = new_number_expr($1);}
-    | IDENT ASSIGN expression {printf("parse assignation: %s", $1);}
+    | IDENT ASSIGN expression {printf("parse assignation: %s\n", $1);}
     ;
 %%
     

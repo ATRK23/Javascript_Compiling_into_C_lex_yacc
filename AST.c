@@ -35,14 +35,17 @@ AST_expr new_number_expr(double number)
   return t;
 }
 
-/* create an AST leaf from a value */
 AST_comm new_command(AST_expr expression){
-  AST_comm t =  malloc(sizeof(struct _command_tree));
+  AST_comm t = malloc(sizeof(struct _command_tree));
   if (t!=NULL){	/* malloc ok */
     t->expr1 = expression;
-  } else printf("ERR : MALLOC ");
+    t->rule = 'v'; // <- marque comme expression normale
+    t->next = NULL;
+    t->import_name = NULL;
+  } else {
+    printf("ERR : MALLOC ");
+  }
   return t;
-
 }
 
 /* delete an AST */
@@ -161,9 +164,18 @@ AST_comm make_import_command(char* name) {
     t->rule = 'I'; // I pour Import
     t->import_name = name;
     t->expr1 = NULL;
+    t->next = NULL;
   } else {
     printf("ERR : MALLOC ");
   }
   return t;
+}
+
+AST_comm append_comm(AST_comm c1, AST_comm c2) {
+  if (!c1) return c2;
+  AST_comm current = c1;
+  while (current->next) current = current->next;
+  current->next = c2;
+  return c1;
 }
 
