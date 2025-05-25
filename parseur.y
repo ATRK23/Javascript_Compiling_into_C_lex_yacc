@@ -29,6 +29,8 @@
 %type <ast> expression
 %type <comm> program commande top
 %type <comm> block
+%type <ast> arguments
+%type <ast> argument_list
 
 
 %parse-param {AST_comm *rez}
@@ -87,7 +89,36 @@ expression:
     | FALSE {$$ = new_boolean_expr(0);}
     | NUMBER {$$ = new_number_expr($1);}
     | IDENT { $$ = new_var_expr($1); }
+    | IDENT '(' arguments ')' { $$ = new_call_expr($1, $3->args, $3->arg_count); }
     ;
+
+arguments:
+    /* aucun argument */ {
+        $$ = malloc(sizeof(struct _expr_tree));
+        $$->args = NULL;
+        $$->arg_count = 0;
+    }
+  | argument_list {
+        $$ = malloc(sizeof(struct _expr_tree));
+        $$->args = $1->args;
+        $$->arg_count = $1->arg_count;
+    }
+  ;
+
+argument_list:
+    expression {
+        $$ = malloc(sizeof(struct _expr_tree));
+        $$->args = malloc(sizeof(AST_expr) * 1);
+        $$->args[0] = $1;
+        $$->arg_count = 1;
+    }
+  | argument_list ',' expression {
+        $1->args = realloc($1->args, sizeof(AST_expr) * ($1->arg_count + 1));
+        $1->args[$1->arg_count++] = $3;
+        $$ = $1;
+    }
+  ;
+  
 %%
     
 int yyerror(AST_comm *rez, const char *msg){

@@ -128,6 +128,14 @@ void print_code_expr(AST_expr ex){
     case '>' : printf("GtBool\n"); break;
     case 'g' : printf("GeBool\n"); break;
     case 'V' : printf("GetVar %s\n", ex->varname); break;
+    case 'C': {
+      for (int i = ex->arg_count - 1; i >= 0; --i) {
+          print_code_expr(ex->args[i]);
+          printf("SetArg\n");
+      }
+      printf("Call %s\n", ex->varname);
+      break;
+}
   }
 }
 
@@ -187,13 +195,12 @@ void print_code(AST_comm t) {
       break;
     }
   }
+
   if (t->next) {
     print_code(t->next);
   }
+
 }
-
-
-
 
 AST_expr new_boolean_expr(int value)
 {
@@ -318,6 +325,22 @@ AST_comm make_if_command(AST_expr cond, AST_comm if_cmd, AST_comm else_cmd) {
     t->next = NULL;
     t->if_block = if_cmd;
     t->else_block = else_cmd;
+  } else {
+    printf("ERR : MALLOC ");
+  }
+  return t;
+}
+
+AST_expr new_call_expr(char* name, AST_expr* args, int count) {
+  AST_expr t = malloc(sizeof(struct _expr_tree));
+  if (t != NULL) {
+    t->rule = 'C';
+    t->varname = strdup(name);
+    t->args = args;
+    t->arg_count = count;
+    t->left = NULL;
+    t->right = NULL;
+    t->taille = count + 2;
   } else {
     printf("ERR : MALLOC ");
   }

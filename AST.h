@@ -6,6 +6,8 @@ struct _expr_tree {
   double number;                   /* int  for value */
   int taille;
   char* varname;                     /* contenir le nom de la variable*/
+  int arg_count;                    /* combien d'arguments */
+  struct _expr_tree** args;          /* tableau de pointeurs vers les expressions arguments */
   struct _expr_tree* left;           /* NULL   if unary node or leaf*/
   struct _expr_tree* right;          /* used for unary node but NULL if leaf */
 };
@@ -56,6 +58,8 @@ AST_expr fold_constants(AST_expr t);
 AST_comm make_if_command(AST_expr cond, AST_comm if_cmd, AST_comm else_cmd);
 
 AST_comm make_do_while_command(AST_comm body, AST_expr cond);
+
+AST_expr new_call_expr(char* name, AST_expr* args, int count);
 
 // Cette fonction vérifie si une expression est 100% constante
 int is_const_expr(AST_expr t);
