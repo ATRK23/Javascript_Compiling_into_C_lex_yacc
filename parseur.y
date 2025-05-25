@@ -60,7 +60,8 @@ commande : expression ';'                    { $$ = new_command($1); }
   | IDENT ASSIGN expression ';'       { $$ = new_command(new_assign_expr($1, $3)); }
   | IF '(' expression ')' block ELSE block   { $$ = make_if_command($3, $5, $7); }
   | DROP ';' {printf("parse command drop\n");}
-  | DO expression WHILE '(' expression ')' ';' {printf("parse command : do while");}
+  | DO commande WHILE '(' expression ')' ';' { $$ = make_do_while_command($2, $5); }
+  | DO block WHILE '(' expression ')' ';'    { $$ = make_do_while_command($2, $5); }
   ;
 
 expression:

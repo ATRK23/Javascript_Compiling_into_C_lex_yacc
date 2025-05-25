@@ -55,6 +55,7 @@ AST_expr fold_constants(AST_expr t);
 //Fonction pour gerer le if 
 AST_comm make_if_command(AST_expr cond, AST_comm if_cmd, AST_comm else_cmd);
 
+AST_comm make_do_while_command(AST_comm body, AST_expr cond);
 
 // Cette fonction vérifie si une expression est 100% constante
 int is_const_expr(AST_expr t);

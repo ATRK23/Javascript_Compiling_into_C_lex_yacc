@@ -172,6 +172,16 @@ void print_code(AST_comm t) {
       break;
     }
 
+    case 'W': {
+        print_code(t->if_block);
+        print_code_expr(t->expr1);
+        
+        int total_size = (t->if_block ? t->if_block->expr1->taille : 0) + (t->expr1 ? t->expr1->taille : 0) + 1;
+
+        printf("ConJmp -%d\n", total_size);
+        break;
+    }
+
     default: {
       print_code_expr(t->expr1);
       break;
@@ -248,6 +258,21 @@ int is_const_expr(AST_expr t) {
   if (t->rule == 'N' || t->rule == 'T' || t->rule == 'F') return 1;
   if (t->rule == 'V') return 0; // c’est une variable
   return is_const_expr(t->left) && is_const_expr(t->right);
+}
+
+AST_comm make_do_while_command(AST_comm body, AST_expr cond) {
+    AST_comm t = malloc(sizeof(struct _command_tree));
+    if (t != NULL) {
+        t->rule = 'W';  // 'W' pour do_while
+        t->expr1 = cond;
+        t->if_block = body;
+        t->else_block = NULL;
+        t->next = NULL;
+        t->import_name = NULL;
+    } else {
+        printf("ERR : MALLOC ");
+    }
+    return t;
 }
 
 
