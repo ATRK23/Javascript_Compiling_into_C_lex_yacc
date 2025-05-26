@@ -1,8 +1,8 @@
-# AST & Génération de Code — Fragment 4.2
+# AST & Génération de Code — Fragment 5.0
 
 ## Description
 
-Cette branche contient la définition et l'implémentation des arbres syntaxiques abstraits (AST), utilisés pour représenter les expressions et les commandes du langage.
+Cette branche contient la définition, l'implémentation des arbres syntaxiques abstraits (AST), utilisés pour représenter les expressions et les commandes du langage ajoute la gestion des **casts implicites à la JavaScript** dans les contextes booléens (`if`, `while`...).
 Elle inclut également la génération de pseudo-code à partir de ces arbres (`print_code`), permettant d'interpréter ou de compiler le programme analysé.
 
 ## Contenu principal
@@ -24,19 +24,20 @@ Elle inclut également la génération de pseudo-code à partir de ces arbres (`
 
 ---
 
-## Ajouts spécifiques du fragment 4.2
+## Ajouts spécifiques du fragment 5.0
 
-- Implémentation des **déclarations de fonctions**, avec :
-  - Nouveau type de commande `rule = 'X'` pour `AST_comm`
-  - Enregistrement du nom de la fonction, de la liste de ses paramètres et de son corps
-- Extension de la structure `AST_comm` :
-  - Champs `args` (`char**`) et `arg_count` ajoutés
-- Nouvelle fonction : `make_function_declaration(...)`
-- Génération d’instructions spécifiques :
-  - `NewClot nom`
-  - `DclArg param`
-  - `Return`
-- Support complet des **fonctions imbriquées, appels en cascade, et passage d’arguments**
+**Casts implicites vers booléen** dans :
+  - les conditions des `if (...)`
+  - les conditions des `do {...} while (...)`
+  - les expressions booléennes comme `&&`, `||` si souhaité
+- Nouvelle fonction `print_code_expr_condition()` utilisée dans `AST.c` pour insérer automatiquement :
+  - `BoToNb` (cast JS-like) après toute expression numérique en contexte booléen
+- Aucune modification de la grammaire (`.y`) : les changements respectent le périmètre de la branche `AST`
+- Exemples gérés :
+  - `if (x + 1) { ... }`
+  - `while (square(x)) { ... }`
+  - `do { ... } while (4 - 4)`
+
 
 ---
 

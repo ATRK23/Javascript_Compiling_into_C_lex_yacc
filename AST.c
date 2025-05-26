@@ -139,6 +139,14 @@ void print_code_expr(AST_expr ex){
   }
 }
 
+void print_code_expr_condition(AST_expr e) {
+  print_code_expr(e);
+  // conditions (comme JS, frag 5.0)
+  if (e && (e->rule == 'N' || e->rule == '+' || e->rule == '-' || e->rule == '*' ||
+            e->rule == '/' || e->rule == '%' || e->rule == 'V' || e->rule == 'C')) {
+    printf("BoToNb\n");
+  }
+}
 
 void print_code(AST_comm t) {
   if (t == NULL) return;
@@ -168,7 +176,7 @@ void print_code(AST_comm t) {
       AST_comm if_cmd = t->if_block;
       AST_comm else_cmd = t->else_block;
 
-      print_code_expr(cond);
+      print_code_expr_condition(cond);
 
       int then_size = (if_cmd && if_cmd->expr1) ? if_cmd->expr1->taille + 1 : 1;
       int else_size = (else_cmd && else_cmd->expr1) ? else_cmd->expr1->taille : 0;
@@ -182,7 +190,7 @@ void print_code(AST_comm t) {
 
     case 'W': {
         print_code(t->if_block);
-        print_code_expr(t->expr1);
+        print_code_expr_condition(t->expr1);
         
         int total_size = (t->if_block ? t->if_block->expr1->taille : 0) + (t->expr1 ? t->expr1->taille : 0) + 1;
 
