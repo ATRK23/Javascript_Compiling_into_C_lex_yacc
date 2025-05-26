@@ -49,7 +49,10 @@
 %left '*' '/' '%'
 %right NOT
 %right UMOINS
+%right ASSIGN
 
+%nonassoc IFX
+%nonassoc ELSE
 
 %%
 top : program { *rez = $1; }
@@ -64,22 +67,15 @@ block :
   | commande block          { $$ = append_comm($1, $2); }
   ;
 
-commande :
-        | FUNCTION IDENT '(' param_list ')' '{' block '}' {
-        $$ = make_function_declaration($2, $4, yynerrs, $7);
-        }
-        | RETURN expression ';' {
-            printf("parse: RETURN\n");
-            $$ = new_command($2);  // Ajoute cette ligne
-        }
-        | expression ';'
-            { $$ = new_command($1); }
-        | IDENT ASSIGN expression ';'       { $$ = new_command(new_assign_expr($1, $3)); }
+commande : FUNCTION IDENT '(' param_list ')' '{' block '}' {$$ = make_function_declaration($2, $4, yynerrs, $7);}
+        | RETURN expression ';' { printf("parse: RETURN\n"); $$ = new_command($2);}
         | IF '(' expression ')' commande ELSE commande   { $$ = make_if_command($3, $5, $7); }
-        | DROP ';' {printf("parse command drop\n");}
         | DO commande WHILE '(' expression ')' ';' { $$ = make_do_while_command($2, $5); }
         | DO block WHILE '(' expression ')' ';'    { $$ = make_do_while_command($2, $5); }
         | IMPORT IDENT ';' { $$ = make_import_command($2);}
+        | IDENT ASSIGN expression ';'       { $$ = new_command(new_assign_expr($1, $3)); }
+        | DROP ';' {printf("parse command drop\n");}
+        | expression ';' { $$ = new_command($1); }
         | ';' { $$ = NULL; }
         | '{' block '}' { $$ = $2; }
         ;
