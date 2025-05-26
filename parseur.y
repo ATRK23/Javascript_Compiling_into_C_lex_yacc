@@ -105,7 +105,6 @@ expression:
     | FALSE {$$ = new_boolean_expr(0);}
     | NUMBER {$$ = new_number_expr($1);}
     | UNDEFINED { $$ = new_undefined_expr(); }
-    | IDENT ASSIGN expression {printf("parse assignation: %s\n", $1);}
     | IDENT { $$ = new_var_expr($1); }
     | IDENT '(' arguments ')' { $$ = new_call_expr($1, $3->args, $3->arg_count); }
     ;

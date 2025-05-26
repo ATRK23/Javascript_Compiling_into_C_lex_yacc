@@ -106,8 +106,13 @@ void print_code_expr(AST_expr ex){
     return;
   }
 
-  print_code_expr(ex->left);
-  print_code_expr(ex->right);
+  if (ex->rule == '+' || ex->rule == '-' || ex->rule == '*' || ex->rule == '/' || ex->rule == '%') {
+      print_code_expr_with_cast(ex->left);
+      print_code_expr_with_cast(ex->right);
+  } else {
+      print_code_expr(ex->left);
+      print_code_expr(ex->right);
+  }
 
   switch (ex->rule) {
     case 'N' : printf("CsteNb %f\n", ex->number); break;
@@ -137,6 +142,13 @@ void print_code_expr(AST_expr ex){
       printf("Call %s\n", ex->varname);
       break;
 }
+  }
+}
+
+void print_code_expr_with_cast(AST_expr ex) {
+  print_code_expr(ex);
+  if (ex && (ex->rule == 'T' || ex->rule == 'F')) {
+    printf("NbToBo\n");
   }
 }
 
@@ -221,8 +233,7 @@ void print_code(AST_comm t) {
 
 }
 
-AST_expr new_boolean_expr(int value)
-{
+AST_expr new_boolean_expr(int value) {
   AST_expr t=(struct _expr_tree*) malloc(sizeof(struct _expr_tree));
   if (t!=NULL){
     t->rule = (value ? 'T' : 'F');
@@ -281,8 +292,8 @@ AST_expr new_assign_expr(char* name, AST_expr expr) {
 //cette fonction vérifie si une expression est 100% constante
 int is_const_expr(AST_expr t) {
   if (!t) return 1;
-  if (t->rule == 'N' || t->rule == 'T' || t->rule == 'F') return 1;
-  if (t->rule == 'V') return 0; // c’est une variable
+  if (t->rule == 'N') return 1;
+  if (t->rule == 'V' || t->rule == 'T' || t->rule == 'F') return 0;
   return is_const_expr(t->left) && is_const_expr(t->right);
 }
 

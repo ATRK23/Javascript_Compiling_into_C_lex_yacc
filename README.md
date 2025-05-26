@@ -5,6 +5,8 @@
 Cette branche contient la définition, l'implémentation des arbres syntaxiques abstraits (AST), utilisés pour représenter les expressions et les commandes du langage ajoute la gestion des **casts implicites à la JavaScript** et du **type `undefined`** dans les contextes booléens (`if`, `while`...).
 Elle inclut également la génération de pseudo-code à partir de ces arbres (`print_code`), permettant d'interpréter ou de compiler le programme analysé.
 
+Cette version ajoute la possibilité de caster des nombre vers des booléens (NbToBo)
+
 ## Contenu principal
 
 - `AST.h` : définitions des structures de nœuds pour les expressions (`AST_expr`) et les commandes (`AST_comm`).
@@ -42,6 +44,7 @@ Elle inclut également la génération de pseudo-code à partir de ces arbres (`
   - `x = undefined;`
   - `return undefined;`
   - `while (getU()) { ... }`
+  - `true + 1;`
 
 
 ---
@@ -57,3 +60,4 @@ Elle inclut également la génération de pseudo-code à partir de ces arbres (`
 
 ```bash
 make
+```
