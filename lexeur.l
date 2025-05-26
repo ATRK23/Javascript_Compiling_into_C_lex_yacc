@@ -67,7 +67,6 @@ NaN|nan { yylval.number = 0.0/0.0; return NUMBER; }
     return IDENT;
 }
 
-
 \n { printf("lex: fin de lecture\n\n");
     return 0; }
 
