@@ -1,8 +1,8 @@
-# AST & Génération de Code — Fragment 5.0
+# AST & Génération de Code — Fragment 5.1
 
 ## Description
 
-Cette branche contient la définition, l'implémentation des arbres syntaxiques abstraits (AST), utilisés pour représenter les expressions et les commandes du langage ajoute la gestion des **casts implicites à la JavaScript** dans les contextes booléens (`if`, `while`...).
+Cette branche contient la définition, l'implémentation des arbres syntaxiques abstraits (AST), utilisés pour représenter les expressions et les commandes du langage ajoute la gestion des **casts implicites à la JavaScript** et du **type `undefined`** dans les contextes booléens (`if`, `while`...).
 Elle inclut également la génération de pseudo-code à partir de ces arbres (`print_code`), permettant d'interpréter ou de compiler le programme analysé.
 
 ## Contenu principal
@@ -24,19 +24,24 @@ Elle inclut également la génération de pseudo-code à partir de ces arbres (`
 
 ---
 
-## Ajouts spécifiques du fragment 5.0
+## Ajouts spécifiques du fragment 5.1
 
 **Casts implicites vers booléen** dans :
   - les conditions des `if (...)`
   - les conditions des `do {...} while (...)`
-  - les expressions booléennes comme `&&`, `||` si souhaité
+  - les appels de fonctions et les variables numériques
 - Nouvelle fonction `print_code_expr_condition()` utilisée dans `AST.c` pour insérer automatiquement :
-  - `BoToNb` (cast JS-like) après toute expression numérique en contexte booléen
-- Aucune modification de la grammaire (`.y`) : les changements respectent le périmètre de la branche `AST`
+  - `BoToNb` après toute expression numérique ou `undefined` en contexte booléen
+- **Ajout du type `undefined`** :
+  - Reconnu comme constante spéciale (`UNDEFINED` dans le parseur)
+  - Implémenté dans l’AST avec `rule = 'U'`
+  - Génère l’instruction `CsteUn`
+  - Se convertit automatiquement en `false` dans les contextes booléens
 - Exemples gérés :
-  - `if (x + 1) { ... }`
-  - `while (square(x)) { ... }`
-  - `do { ... } while (4 - 4)`
+  - `if (undefined) { ... }`
+  - `x = undefined;`
+  - `return undefined;`
+  - `while (getU()) { ... }`
 
 
 ---

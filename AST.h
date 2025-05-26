@@ -65,6 +65,8 @@ AST_expr new_call_expr(char* name, AST_expr* args, int count);
 
 AST_comm make_function_declaration(char* name, char** args, int count, AST_comm body);
 
+AST_expr new_undefined_expr(void);
+
 // Cette fonction vérifie si une expression est 100% constante
 int is_const_expr(AST_expr t);
 

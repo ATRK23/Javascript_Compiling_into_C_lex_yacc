@@ -128,6 +128,7 @@ void print_code_expr(AST_expr ex){
     case '>' : printf("GtBool\n"); break;
     case 'g' : printf("GeBool\n"); break;
     case 'V' : printf("GetVar %s\n", ex->varname); break;
+    case 'U': printf("CsteUn\n"); break;
     case 'C': {
       for (int i = ex->arg_count - 1; i >= 0; --i) {
           print_code_expr(ex->args[i]);
@@ -143,7 +144,7 @@ void print_code_expr_condition(AST_expr e) {
   print_code_expr(e);
   // conditions (comme JS, frag 5.0)
   if (e && (e->rule == 'N' || e->rule == '+' || e->rule == '-' || e->rule == '*' ||
-            e->rule == '/' || e->rule == '%' || e->rule == 'V' || e->rule == 'C')) {
+            e->rule == '/' || e->rule == '%' || e->rule == 'V' || e->rule == 'C' || e->rule == 'U')) {
     printf("BoToNb\n");
   }
 }
@@ -378,6 +379,17 @@ AST_comm make_function_declaration(char* name, char** args, int count, AST_comm 
         t->else_block = NULL;
     }
     return t;
+}
+
+AST_expr new_undefined_expr(void) {
+  AST_expr t = malloc(sizeof(struct _expr_tree));
+  if (t != NULL) {
+    t->rule = 'U';  // 'U' pour Undefined
+    t->left = NULL;
+    t->right = NULL;
+    t->taille = 1;
+  }
+  return t;
 }
 
 

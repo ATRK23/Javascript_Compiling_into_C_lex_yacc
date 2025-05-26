@@ -50,6 +50,8 @@ NaN|nan { yylval.number = 0.0/0.0; return NUMBER; }
 "function"  { return FUNCTION; }
 "return"    { return RETURN; }
 
+"undefined" { return UNDEFINED; }
+
 [a-zA-Z_][a-zA-Z0-9_]* {
     if (
         strcmp(yytext, "true") == 0 || strcmp(yytext, "false") == 0 ||
