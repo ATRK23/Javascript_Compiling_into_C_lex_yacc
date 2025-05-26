@@ -2,19 +2,42 @@
 
 %{ // the code between %{ and %} is copied at the start of the generated .c
     #include <stdio.h>
+    #include <stdlib.h>
     #include "AST.h"
     int yylex(void); // declared to avoid implicit call
     int yyerror(AST_comm *rez, const char*); // on generated functions
 %}
 
-%token NUMBER
+%union {
+  double number;
+  char* string;
+  struct _expr_tree* ast;
+  struct _command_tree* comm;
+  char** string_list;
+}
+
 %token BOOLEAN
 %token TRUE FALSE AND OR NOT EQ NEQ LE GE LT GT
-%start commande
+%token ASSIGN
+%token IMPORT
+%token DROP
+%token DO WHILE
+%token <string> IDENT
+%token IF ELSE
+%token FUNCTION RETURN
+%token UNDEFINED
 
-%union { double number; AST_expr ast; };
+%start top
+
 %token <number> NUMBER
 %type <ast> expression
+%type <comm> program commande top
+%type <comm> block
+%type <ast> arguments
+%type <ast> argument_list
+%type <string_list> param_list
+
+
 
 %parse-param {AST_comm *rez}
 
@@ -23,21 +46,46 @@
 %left EQ NEQ
 %left LT LE GT GE
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
 %right NOT
 %right UMOINS
+%right ASSIGN
 
+%nonassoc IFX
+%nonassoc ELSE
 
 %%
-commande : 
-    expression ';'
-        { *rez = new_command($1);}
+top : program { *rez = $1; }
+    ;
+
+program : commande { $$ = $1; }
+        | commande program { $$ = append_comm($1, $2); }
+        ;
+
+block :
+    commande                { $$ = $1; }
+  | commande block          { $$ = append_comm($1, $2); }
+  ;
+
+commande : FUNCTION IDENT '(' param_list ')' '{' block '}' {$$ = make_function_declaration($2, $4, yynerrs, $7);}
+        | RETURN expression ';' { printf("parse: RETURN\n"); $$ = new_command($2);}
+        | IF '(' expression ')' commande ELSE commande   { $$ = make_if_command($3, $5, $7); }
+        | DO commande WHILE '(' expression ')' ';' { $$ = make_do_while_command($2, $5); }
+        | DO block WHILE '(' expression ')' ';'    { $$ = make_do_while_command($2, $5); }
+        | IMPORT IDENT ';' { $$ = make_import_command($2);}
+        | IDENT ASSIGN expression ';'       { $$ = new_command(new_assign_expr($1, $3)); }
+        | DROP ';' {printf("parse command drop\n");}
+        | expression ';' { $$ = new_command($1); }
+        | ';' { $$ = NULL; }
+        | '{' block '}' { $$ = $2; }
+        ;
 
 expression:
-    expression: expression '+' expression {$$ = new_binary_expr('+',$1,$3);}
+    expression '+' expression {$$ = new_binary_expr('+',$1,$3);}
     | expression '-' expression {$$ = new_binary_expr('-',$1,$3);}
     | expression '*' expression {$$ = new_binary_expr('*',$1,$3);}
     | expression '/' expression {$$ = new_binary_expr('/', $1, $3);}
+    | expression '%' expression {$$ = new_binary_expr('%', $1, $3);}
     | expression AND expression {$$ = new_binary_expr('&', $1, $3);}
     | expression OR expression {$$ = new_binary_expr('|', $1, $3);}
     | expression EQ expression {$$ = new_binary_expr('E', $1, $3);}
@@ -52,7 +100,55 @@ expression:
     | TRUE {$$ = new_boolean_expr(1);}
     | FALSE {$$ = new_boolean_expr(0);}
     | NUMBER {$$ = new_number_expr($1);}
+    | UNDEFINED { $$ = new_undefined_expr(); }
+    | IDENT { $$ = new_var_expr($1); }
+    | IDENT '(' arguments ')' { $$ = new_call_expr($1, $3->args, $3->arg_count); }
     ;
+
+param_list :
+      /* aucun argument */ {
+        $$ = NULL;
+        yynerrs = 0;
+    }
+    | IDENT {
+        $$ = malloc(sizeof(char*) * 1);
+        $$[0] = $1;
+        yynerrs = 1;
+    }
+    | param_list ',' IDENT {
+        $$ = realloc($1, sizeof(char*) * (yynerrs + 1));
+        $$[yynerrs++] = $3;
+    }
+    ;
+
+
+arguments:
+    /* aucun argument */ {
+        $$ = malloc(sizeof(struct _expr_tree));
+        $$->args = NULL;
+        $$->arg_count = 0;
+    }
+  | argument_list {
+        $$ = malloc(sizeof(struct _expr_tree));
+        $$->args = $1->args;
+        $$->arg_count = $1->arg_count;
+    }
+  ;
+
+argument_list:
+    expression {
+        $$ = malloc(sizeof(struct _expr_tree));
+        $$->args = malloc(sizeof(AST_expr) * 1);
+        $$->args[0] = $1;
+        $$->arg_count = 1;
+    }
+  | argument_list ',' expression {
+        $1->args = realloc($1->args, sizeof(AST_expr) * ($1->arg_count + 1));
+        $1->args[$1->arg_count++] = $3;
+        $$ = $1;
+    }
+  ;
+  
 %%
     
 int yyerror(AST_comm *rez, const char *msg){
