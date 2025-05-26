@@ -19,6 +19,7 @@
 %token <string> IDENT
 %token IF ELSE
 %token FUNCTION RETURN
+%token UNDEFINED
 
 %start top
 
@@ -92,6 +93,7 @@ expression:
     | IDENT ASSIGN expression {printf("parse assignation: %s\n", $1);}
     | IDENT '(' arguments ')' {printf("parse: IDENT with arguments\n");}
     | IDENT {printf("parse: IDENT\n");}
+    | UNDEFINED { printf("parse : UNDEFINED\n"); }
     ;
 
 arguments: /* aucun argument */ {;}
