@@ -31,6 +31,7 @@
 %left '*' '/' '%'
 %right NOT
 %right UMOINS
+%right ASSIGN
 
 
 %%
