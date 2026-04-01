@@ -1,3 +1,6 @@
+# In collaboration with
+This project was made in collaboration with [Samy HALIT](https://github.com/Sglinggling)
+
 # AST & Génération de Code — Fragment 5.1
 
 ## Description
